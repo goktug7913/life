@@ -22,7 +22,6 @@ public class LifeBase : MonoBehaviour
     public float healthRegen = 0; // The amount of health to regenerated per second.
     public bool canRegenHealth = false; // Whether or not the creature can regenerate health.
 
-
     // Common attributes to all life.
     public bool isAlive = true;
     public bool canReproduce = true;
@@ -31,6 +30,11 @@ public class LifeBase : MonoBehaviour
     public bool canBeAttacked = true;
     public bool canBeEaten = true;
     
+    public float decayTime = 0; // Time in seconds before the body decays, will mainly be affected by the mass of the body.
+    public float decayTimer = 0; // Time left before the body decays.
+    public bool isDecaying = false; // Whether or not the body is decaying.
+    public bool isDecayed = false; // Whether or not the body is decayed.
+
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     // Start is called before the first frame update
     void Start()
@@ -50,7 +54,7 @@ public class LifeBase : MonoBehaviour
         Animalia,
         Plantae,
         Fungi,
-        na
+        na,
         // Note: More in the future?
     }
 
@@ -63,7 +67,7 @@ public class LifeBase : MonoBehaviour
     }
 
     // Function to calculate the health of the creature.
-    public void CalculateHealth(){
+    void CalculateHealth(){
         if(canRegenHealth){
             health += healthRegen * Time.deltaTime;
         }
@@ -71,4 +75,42 @@ public class LifeBase : MonoBehaviour
             health = maxHealth;
         }
     }
+
+    void HandleDeath(){
+        // Log with id of the creature.
+        Debug.Log("Creature " + gameObject.GetInstanceID() + " has died.");
+
+        isAlive = false; // Not alive anymore.
+        isDecaying = true; // It will start decaying.
+        canReproduce = false; // We can't reproduce anymore.    
+        canMove = false; // We can't move anymore.
+        canAttack = false; // We can't attack anymore.
+        canBeAttacked = false; // (Assumption) We can't be attacked anymore.
+        canBeEaten = true; // We can be eaten in this state. (Not recommended :P)
+        canRegenHealth = false; // We can't regenerate health anymore.
+        decayTimer = decayTime; // We start decaying.
+    }
+
+    void DecayTicker(){
+        if(decayTimer > 0){
+            decayTimer -= Time.deltaTime;
+        }
+        if(decayTimer <= 0){
+            isDecayed = true;
+        }
+    }
+
+    void HandleDecay(){
+        // Simple logic to handle decay.
+        // Should be moved to a coroutine later, for performance reasons.
+        if (isDecaying){
+            DecayTicker();
+        }
+        if (isDecayed){
+            // Log with id of the creature.
+            Debug.Log("Creature " + gameObject.GetInstanceID() + " has decayed.");
+            Destroy(gameObject);
+        }
+    }
+
 }
