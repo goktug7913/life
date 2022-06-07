@@ -4,6 +4,9 @@ using UnityEngine;
 
 public class LifeBase : MonoBehaviour
 {
+    // Parent class for all life objects.
+    // Contains all the basic functions for all life objects.
+    // Is meant to be inherited by other classes.
     public Genus genus = Genus.na;
     public Sex sex = Sex.na; 
     public int age = 0; // Age of the creature
@@ -16,6 +19,9 @@ public class LifeBase : MonoBehaviour
 
     // The genes will be used to determine the behaviour and attributes of the organism.
     public float[] dna;
+    public int dnaLength = 0;
+    public float dnaMin = 0; // Minimum value for a gene
+    public float dnaMax = 1; // Maximum value for a gene
 
     public float health = 0; // All life will have a health value.
     public float maxHealth = 0; // The maximum possible health of the creature.
@@ -37,15 +43,16 @@ public class LifeBase : MonoBehaviour
 
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     // Start is called before the first frame update
-    void Start()
+    protected virtual void Start()
     {
-        
+        generateDnaRandom();
     }
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     // Update is called once per frame
-    void Update()
+    protected virtual void Update()
     {
-        
+        CalculateHealth();
+        HandleDecay();
     }
 
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
@@ -66,6 +73,14 @@ public class LifeBase : MonoBehaviour
         na,
     }
 
+    void generateDnaRandom(){
+        // For now we will generate random floats
+        for (int i = 0; i < dnaLength; i++){
+            dna[i] = Random.Range(dnaMin, dnaMax); // terrible..
+        }
+        Debug.Log("Generated random DNA for: " + gameObject.name + " with length: " + dnaLength);
+    }
+
     // Function to calculate the health of the creature.
     void CalculateHealth(){
         if(canRegenHealth){
@@ -73,6 +88,9 @@ public class LifeBase : MonoBehaviour
         }
         if(health > maxHealth){
             health = maxHealth;
+        }
+        if(health <= 0){
+            HandleDeath(); // ded :'(
         }
     }
 
