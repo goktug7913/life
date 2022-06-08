@@ -8,6 +8,11 @@ public class Animal : LifeBase
     // It contains all the basic functions for all animals.
     // Is meant to be inherited by other classes.
     
+    // Sensory system for awareness of other life objects.
+    float visionRange = 0;
+    float visionAngle = 0;
+    float hearingRange = 0;
+
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     // Start is called before the first frame update
     override protected void Start()
@@ -23,7 +28,7 @@ public class Animal : LifeBase
     }
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
     // Custom methods and definitions go here.
-    
+
     enum State{
         /* We will have a state machine for the animal, which will be used to determine what the animal is doing.
         As this is the parent class for all animals, we will have many possible states,

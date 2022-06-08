@@ -13,8 +13,7 @@ public class LifeBase : MonoBehaviour
     public int generation = 0; // Generation of the creature (in the context of bloodline)
 
     // DNA will be an array of floats, each representing a gene
-    // The length of the array will be the number of genes in the organism,
-    // and the values of the genes will be between 0 and 1.
+    // The length of the array will be the number of genes in the organism.
     // Length can vary depending on the organism.
 
     // The genes will be used to determine the behaviour and attributes of the organism.
@@ -29,6 +28,7 @@ public class LifeBase : MonoBehaviour
     public bool canRegenHealth = false; // Whether or not the creature can regenerate health.
 
     // Common attributes to all life.
+    public float mass = 0; // in kg
     public bool isAlive = true;
     public bool canReproduce = true;
     public bool canMove = false;
