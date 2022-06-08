@@ -10,23 +10,39 @@ public class Animal : LifeBase
     
     public State state; // The current state of the animal. (e.g. wandering, attacking, etc.)
 
+    // Neural data
+    public Vector3[] foodLocations; // Memory of food locations.
+    public Vector3[] enemyLocations; // Memory of enemy locations.
+    public Vector3[] mateLocations; // Memory of mate locations.
+    public Vector3 wanderTarget; // The target location for the animal to wander to.
+    public Vector3 mateTarget; // The target location for the animal to mate with.
+    public Vector3 attackTarget; // The target location for the animal to attack.
+    public Vector3 fleeTarget; // The target location for the animal to flee to.
+
+    // Behaviour data
+    public float hunger;
+    public float maxHunger;
+    public float thirst;
+    public float maxThirst;
+    public float confidence;
+    public float fear;
+    public float digestionProgress;
+
     // Sensory system for awareness of other life objects.
-    public float visionRange = 0;
-    public float visionAngle = 0;
-    public float hearingRange = 0;
+    public float visionRange = 5f;
+    public float visionAngle = 0f;
+    public float hearingRange = 0f;
 
     // Movement system
-    public float speed = 0;
-    public float acceleration = 0;
-    public float deceleration = 0;
-    public float maxSpeed = 0;
+    public float speed = 1f;
+    public float acceleration = 0f;
+    public float deceleration = 0f;
+    public float maxSpeed = 0f;
+    public float turnRate = 2f;
 
     // Attack system
     // TODO
     //- - - - - - - -
-
-    // Other attributes
-    public Vector3 wanderTarget;
 
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     // Start is called before the first frame update
@@ -41,6 +57,7 @@ public class Animal : LifeBase
     override protected void Update()
     {
         base.Update();      // Call the base update function.
+        SensoryInput();     // Update the sensory system.
         StateMachine();     // Act on the current state.
     }
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
@@ -55,6 +72,10 @@ public class Animal : LifeBase
         Fleeing, Following, Stalking, FollowingLeader, ChasingPrey,
         LookingForMate, LookingForFood, LookingForWater, LookingForHome,
         Eating, Drinking, Sleeping,
+    }
+
+    void SensoryInput(){
+        // TODO
     }
 
     void StateMachine(){
@@ -98,18 +119,19 @@ public class Animal : LifeBase
         Vector3 wanderDirection = wanderTarget - transform.position;
         Quaternion lookRotation = Quaternion.LookRotation(wanderDirection);
 
-        lookRotation.x = 0; // We don't want the animal to look up or down.
+        // Do not rotate vertically.
+        lookRotation.x = 0;
 
         // Move the animal in the direction of the wander target.
         transform.position += wanderDirection.normalized * speed * Time.deltaTime;
-        transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, Time.deltaTime * 5);
+        transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, Time.deltaTime * turnRate);
     }
 
     Vector3 GetWanderTarget(){
         // This will use the sight system to get a wander target later on.
         // For now we will get a random point in vision radius.
         Vector3 wanderTarget = transform.position + Random.insideUnitSphere * visionRange;
-        wanderTarget.y = 0; // We will only use the x and z coordinates. (Y will make it floaty.)
+        wanderTarget.y = 0.5f; // We will only use the x and z coordinates. (Y will make it floaty.)
         return wanderTarget;
     }
 
@@ -119,7 +141,11 @@ public class Animal : LifeBase
         Gizmos.DrawWireSphere(transform.position, visionRange);
         Gizmos.color = Color.blue;
         Gizmos.DrawWireSphere(transform.position, hearingRange);
-        Gizmos.DrawLine(transform.position, wanderTarget);
+        if (wanderTarget != null && wanderTarget != Vector3.zero)
+        {
+            Gizmos.color = Color.green;
+            Gizmos.DrawLine(transform.position, wanderTarget);
+            Gizmos.DrawWireCube(wanderTarget, new Vector3(1, 1, 1));
+        }
     }
-
 }
