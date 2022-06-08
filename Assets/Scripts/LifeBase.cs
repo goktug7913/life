@@ -75,6 +75,8 @@ public class LifeBase : MonoBehaviour
 
     void generateDnaRandom(){
         // For now we will generate random floats
+        dna = new float[dnaLength];
+
         for (int i = 0; i < dnaLength; i++){
             dna[i] = Random.Range(dnaMin, dnaMax); // terrible..
         }
