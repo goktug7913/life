@@ -6,17 +6,19 @@ public class Animal : LifeBase
 {
     // This is the parent animal class.
     // It contains all the basic functions for all animals.
-    // Is meant to be inherited by other classes.
     
     public State state; // The current state of the animal. (e.g. wandering, attacking, etc.)
 
     // Neural data
+    public int foodLocLimit = 0; // The maximum number of food locations the animal can remember.
+    public int enemyLocLimit = 0;
+    public int mateLocLimit = 0;
     public Vector3[] foodLocations; // Memory of food locations.
     public Vector3[] enemyLocations; // Memory of enemy locations.
     public Vector3[] mateLocations; // Memory of mate locations.
     public Vector3 wanderTarget; // The target location for the animal to wander to.
-    public Vector3 mateTarget; // The target location for the animal to mate with.
-    public Vector3 attackTarget; // The target location for the animal to attack.
+    public Animal mateTarget; // The target animal for the animal to mate with.
+    public Animal attackTarget; // The target location for the animal to attack.
     public Vector3 fleeTarget; // The target location for the animal to flee to.
 
     // Behaviour data
@@ -27,6 +29,11 @@ public class Animal : LifeBase
     public float confidence;
     public float fear;
     public float digestionProgress;
+    public float digestionSpeed;
+
+    // Reproduction data
+    public float gestationTime;
+    public float gestationProgress;
 
     // Sensory system for awareness of other life objects.
     public float visionRange = 5f;
@@ -51,6 +58,7 @@ public class Animal : LifeBase
         base.Start();       // Call the base class's Start function.
         genus = Genus.Animalia;
         state = State.Idle;
+        CalculateMass();
     }
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     // Update is called once per frame
@@ -93,6 +101,11 @@ public class Animal : LifeBase
                 // It will look for food and water.
                 // It will also look for other animals.
                 break;
+            case State.LookingForFood:
+                // The animal is looking for food.
+                // It will check the known food locations first.
+
+                break;
             default:
                 // State was not defined, we should log this.
                 Debug.Log("State not defined for animal: " + gameObject.name + " - State: " + state);
@@ -133,6 +146,56 @@ public class Animal : LifeBase
         Vector3 wanderTarget = transform.position + Random.insideUnitSphere * visionRange;
         wanderTarget.y = 0.5f; // We will only use the x and z coordinates. (Y will make it floaty.)
         return wanderTarget;
+    }
+
+    bool RememberFoodLoc(){
+        // We can only remember if we have room for more food locations.
+        if(foodLocLimit > foodLocations.Length){
+            // We have room for more food locations.
+            // We will remember the food location.
+            return true;
+        }
+        return false;
+        }
+
+    bool RememberEnemyLoc(){
+        return false;
+        }
+
+    bool RememberMateLoc(){
+        return false;
+        }
+
+    bool ForgetFoodLoc(){
+        return false;
+        }
+
+    bool ForgetEnemyLoc(){
+        return false;
+        }
+
+    bool ForgetMateLoc(){
+        return false;
+        }
+
+    void CalculateMass(){
+        // This will calculate the mass of the animal.
+        // TODO
+    }
+
+    void CalculateSpeed(){
+        // This will calculate the speed of the animal.
+        // TODO
+    }
+
+    void CalculateVision(){
+        // This will calculate the vision range of the animal.
+        // TODO
+    }
+
+    void CalculateHearing(){
+        // This will calculate the hearing range of the animal.
+        // TODO
     }
 
     void OnDrawGizmos(){

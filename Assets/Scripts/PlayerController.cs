@@ -4,6 +4,9 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
+    public float moveSpeed = 3f;
+    public float zoomSpeed = 3f;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -17,7 +20,7 @@ public class PlayerController : MonoBehaviour
         float moveHorizontal = Input.GetAxis("Horizontal");
         float moveVertical = Input.GetAxis("Vertical");
         Vector3 movement = new Vector3(moveHorizontal, 0.0f, moveVertical);
-        transform.position += movement * Time.deltaTime;
+        transform.position += movement * Time.deltaTime * moveSpeed;
 
         // Hold middle mouse button to orbit
         if (Input.GetMouseButton(2))
@@ -33,6 +36,10 @@ public class PlayerController : MonoBehaviour
 
         // scroll zoom
         float scroll = Input.GetAxis("Mouse ScrollWheel");
-        Camera.main.orthographicSize -= scroll * 10;
+        if (scroll != 0)
+        {
+            // lerp the camera's field of view to a new value.
+            Camera.main.fieldOfView = Mathf.Lerp(Camera.main.fieldOfView, Camera.main.fieldOfView - scroll * zoomSpeed, Time.deltaTime);
+        }
     }
 }

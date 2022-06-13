@@ -133,4 +133,18 @@ public class LifeBase : MonoBehaviour
         }
     }
 
+    void CalculateSex(){
+        // Sex is determined by DNA
+    }
+
+    void GenerateOffspringDna(){
+        // For now we will generate random floats
+        dna = new float[dnaLength];
+
+        for (int i = 0; i < dnaLength; i++){
+            dna[i] = Random.Range(dnaMin, dnaMax); // terrible..
+        }
+        Debug.Log("Generated random DNA for: " + gameObject.name + " with length: " + dnaLength);
+    }
+
 }
