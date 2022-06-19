@@ -7,7 +7,7 @@ public class Plant : LifeBase
     // This is the parent plant class.
     // It contains all the basic functions for all plants.
 
-    public State state; // The current state of the plant.
+    public Action[] currentActions; // The current state of the plant.
 
     void Start()
     {
@@ -21,4 +21,14 @@ public class Plant : LifeBase
     }
 
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+    public enum Action{
+        /* Todo: Explain what the fuck this is*/
+        Grow,
+        Die,
+        Photosynthesize,
+        ProduceSeeds,
+        DropSeeds,
+
+    }
 }

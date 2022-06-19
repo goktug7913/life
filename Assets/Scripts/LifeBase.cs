@@ -28,7 +28,7 @@ public class LifeBase : MonoBehaviour
     public bool canRegenHealth = false; // Whether or not the creature can regenerate health.
 
     // Common attributes to all life.
-    public float mass = 0; // in kg
+    public float mass = 1; // in kg
     public bool isAlive = true;
     public bool canReproduce = true;
     public bool canMove = false;
@@ -81,6 +81,12 @@ public class LifeBase : MonoBehaviour
             dna[i] = Random.Range(dnaMin, dnaMax); // terrible..
         }
         Debug.Log("Generated random DNA for: " + gameObject.name + " with length: " + dnaLength);
+    }
+
+    void InitStats(){
+        // Initialize all stats here.
+        // This will be called after the object is instantiated.
+        maxHealth = mass * 10;
     }
 
     // Function to calculate the health of the creature.
