@@ -127,6 +127,38 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f6b016d3f2c016f47a98b6e349200678, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  genus: 3
+  sex: 2
+  speciesId: 0
+  age: 0
+  generation: 0
+  isGenesis: 1
+  dna: []
+  dnaLength: 20
+  dnaMin: 0
+  dnaMax: 1
+  mutationRate: 0.01
+  mutationAmount: 0.1
+  otherParent: {fileID: 0}
+  healthCoefficient: 10
+  health: 0
+  maxHealth: 0
+  healthRegen: 0
+  canRegenHealth: 0
+  mass: 1
+  isAlive: 1
+  canReproduce: 1
+  canMove: 0
+  canAttack: 0
+  canBeAttacked: 1
+  canBeEaten: 1
+  speed: 1
+  acceleration: 0
+  deceleration: 0
+  maxSpeed: 0
+  turnRate: 2
+  wanderTarget: {x: 0, y: 0, z: 0}
+  visionRange: 5
 --- !u!1 &7475522390710612146
 GameObject:
   m_ObjectHideFlags: 0

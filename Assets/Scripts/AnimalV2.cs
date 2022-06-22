@@ -17,7 +17,7 @@ public class AnimalV2 : LifeBaseV2
     {
         base.Start();
         genus = Genus.Animalia;
-        
+
         GenerateAttributes();
     }
 
@@ -45,7 +45,7 @@ public class AnimalV2 : LifeBaseV2
         if( wanderTarget == null ||
             wanderTarget == Vector3.zero ||
             distance > visionRange ||
-            distance <= 2.5f )
+            distance <= 0.5f )
         {
             // We will generate a new wander target.
             wanderTarget = GetWanderTarget();
@@ -80,7 +80,7 @@ public class AnimalV2 : LifeBaseV2
         // We will use avg*5 of 5 and 6 for vision range
         float _visionRange = (dna[7] + dna[8])/2;
 
-        speed = _speed;
+        speed = _speed*3;
         visionRange = _visionRange*5;
     }
 
