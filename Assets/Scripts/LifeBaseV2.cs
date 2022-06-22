@@ -48,7 +48,7 @@ public class LifeBaseV2 : MonoBehaviour
     protected virtual void Start()
     {
         if(isGenesis){
-            generateDnaRandom();
+            GenerateDnaRandom();
             GenerateSpeciesId();
         }
 
@@ -82,15 +82,15 @@ public class LifeBaseV2 : MonoBehaviour
 
     void GenerateSpeciesId()
     {
-        speciesId = Random.Range(1,9999);
+        speciesId = UnityEngine.Random.Range(1,9999);
     }
 
-    void generateDnaRandom(){
+    void GenerateDnaRandom(){
         // For now we will generate random floats
         dna = new float[dnaLength];
 
         for (int i = 0; i < dnaLength; i++){
-            dna[i] = Random.Range(dnaMin, dnaMax); // terrible..
+            dna[i] = UnityEngine.Random.Range(dnaMin, dnaMax); // terrible..
         }
         Debug.Log("Generated random DNA for: " + gameObject.name + " with length: " + dnaLength);
     }

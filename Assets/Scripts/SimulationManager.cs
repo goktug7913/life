@@ -38,19 +38,13 @@ public class SimulationManager : MonoBehaviour
         // Spawn the new species pair.
         switch (genus){
             case LifeBase.Genus.Animalia:
-                // Spawn male
                 GameObject a1 = Instantiate(Resources.Load("Prefabs/Animal"), worldPos, Quaternion.identity) as GameObject;
-                // Spawn female
-                GameObject a2 = Instantiate(Resources.Load("Assets/Prefabs/Animal"), worldPos, Quaternion.identity) as GameObject;
-                a2.GetComponent<Animal>().sex = LifeBase.Sex.female;
-                Debug.Log("Created animal pair.");
+                a1.GetComponent<AnimalV2>().isGenesis = true;
                 break;
-
             case LifeBase.Genus.Plantae:
                 // TODO
                 Debug.Log("Cannot create plant pair: not implemented yet.");
                 break;
-
             case LifeBase.Genus.Fungi:
                 // TODO
                 Debug.Log("Cannot create fungus pair: not implemented yet.");
