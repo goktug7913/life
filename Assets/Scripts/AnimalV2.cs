@@ -73,6 +73,20 @@ public class AnimalV2 : LifeBaseV2
         return wanderTarget;
     }
 
+    void SeekMate()
+    {
+        // This will be the seek mate function for the animal.
+        // We will use the mate target to determine where the animal will move.
+        // Get opposite sex of same genus in vision range.
+        
+    }
+
+    void AcceptMate()
+    {
+        // This will be the accept mate function for the animal.
+        // We will use the mate target to determine where the animal will move.
+    }
+
     void GenerateAttributes()
     {
         // First 5 genes are used in LifeBaseV2
@@ -92,13 +106,13 @@ public class AnimalV2 : LifeBaseV2
 
     void OnDrawGizmos(){
         // This will draw the vision range and hearing range of the animal.
-        Gizmos.color = Color.red;
+        Gizmos.color = new Color(1, 0, 0, 0.5f);
         Gizmos.DrawWireSphere(transform.position, visionRange);
-        Gizmos.color = Color.blue;
         if (wanderTarget != null && wanderTarget != Vector3.zero)
         {
-            Gizmos.color = Color.green;
+            Gizmos.color = new Color(0, 1, 0, 0.5f);
             Gizmos.DrawLine(transform.position, wanderTarget);
+            Gizmos.color = new Color(0, 0, 1, 0.5f);
             Gizmos.DrawWireCube(wanderTarget, new Vector3(1, 1, 1));
         }
     }
