@@ -39,7 +39,6 @@ public class SimulationManager : MonoBehaviour
         switch (genus){
             case LifeBase.Genus.Animalia:
                 GameObject a1 = Instantiate(Resources.Load("Prefabs/Animal"), worldPos, Quaternion.identity) as GameObject;
-                a1.GetComponent<AnimalV2>().isGenesis = true;
                 break;
             case LifeBase.Genus.Plantae:
                 // TODO
