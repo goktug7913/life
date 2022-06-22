@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 7475522389865853450}
   - component: {fileID: 7475522389865853451}
   - component: {fileID: 4350269260119322319}
-  - component: {fileID: 7475522389865853444}
+  - component: {fileID: 5221147565205916434}
   m_Layer: 0
   m_Name: body
   m_TagString: Untagged
@@ -115,7 +115,7 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 80
   m_CollisionDetection: 0
---- !u!114 &7475522389865853444
+--- !u!114 &5221147565205916434
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -124,32 +124,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 7475522389865853454}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a569a29880227a0439fc7e1f4d27efd9, type: 3}
+  m_Script: {fileID: 11500000, guid: f6b016d3f2c016f47a98b6e349200678, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  genus: 0
-  sex: 0
-  age: 0
-  generation: 0
-  dna: []
-  dnaLength: 100
-  dnaMin: 0
-  dnaMax: 1
-  health: 100
-  maxHealth: 100
-  healthRegen: 0
-  canRegenHealth: 0
-  mass: 0
-  isAlive: 1
-  canReproduce: 1
-  canMove: 1
-  canAttack: 1
-  canBeAttacked: 1
-  canBeEaten: 1
-  decayTime: 5
-  decayTimer: 5
-  isDecaying: 0
-  isDecayed: 0
 --- !u!1 &7475522390710612146
 GameObject:
   m_ObjectHideFlags: 0

@@ -66,6 +66,7 @@ public class Animal : LifeBase
     {
         base.Update();      // Call the base update function.
         SensoryInput();     // Update the sensory system.
+        DecideState();      // Update the current state.
         StateMachine();     // Act on the current state.
     }
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
@@ -83,6 +84,10 @@ public class Animal : LifeBase
     }
 
     void SensoryInput(){
+        // TODO
+    }
+
+    void DecideState(){
         // TODO
     }
 
