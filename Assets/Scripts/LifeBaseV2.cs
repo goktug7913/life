@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -8,7 +9,8 @@ public class LifeBaseV2 : MonoBehaviour
     // Contains all the basic functions for all life objects.
     // Is meant to be inherited by other classes.
     public Genus genus = Genus.na;
-    public Sex sex = Sex.na; 
+    public Sex sex = Sex.na;
+    public int speciesId = 0;
     public int age = 0; // Age of the creature
     public int generation = 0; // Generation of the creature (in the context of bloodline)
     public bool isGenesis = false;
@@ -19,13 +21,14 @@ public class LifeBaseV2 : MonoBehaviour
 
     // The genes will be used to determine the behaviour and attributes of the organism.
     public float[] dna;
-    public int dnaLength = 10;
+    public int dnaLength = 20;
     public float dnaMin = 0; // Minimum value for a gene
     public float dnaMax = 1; // Maximum value for a gene
     public float mutationRate = 0.01f; // Chance of mutation per gene
     public float mutationAmount = 0.1f; // Amount of mutation per gene
     public LifeBaseV2 otherParent; // Other parent of the creature
 
+    public float healthCoefficient = 10f; // Coefficient for the health of the creature
     public float health = 0; // All life will have a health value.
     public float maxHealth = 0; // The maximum possible health of the creature.
     public float healthRegen = 0; // The amount of health to regenerated per second.
@@ -44,14 +47,19 @@ public class LifeBaseV2 : MonoBehaviour
     // Start is called before the first frame update
     protected virtual void Start()
     {
-        if(isGenesis){generateDnaRandom();}
+        if(isGenesis){
+            generateDnaRandom();
+            GenerateSpeciesId();
+        }
+
         CalculateSex();
+        InitStats();
     }
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     // Update is called once per frame
     protected virtual void Update()
     {
-        CalculateHealth();
+        UpdateHealth();
     }
 
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
@@ -72,6 +80,11 @@ public class LifeBaseV2 : MonoBehaviour
         na,
     }
 
+    void GenerateSpeciesId()
+    {
+        speciesId = Random.Range(1,9999);
+    }
+
     void generateDnaRandom(){
         // For now we will generate random floats
         dna = new float[dnaLength];
@@ -85,11 +98,15 @@ public class LifeBaseV2 : MonoBehaviour
     void InitStats(){
         // Initialize all stats here.
         // This will be called after the object is instantiated.
-        maxHealth = mass * 10;
+        float _mass = (dna[2]+dna[3]) / 2;
+        mass = _mass * dna[4];
+        
+        maxHealth = mass * healthCoefficient;
+        health = maxHealth;
     }
 
     // Function to calculate the health of the creature.
-    void CalculateHealth(){
+    void UpdateHealth(){
         if(canRegenHealth){
             health += healthRegen * Time.deltaTime;
         }
@@ -116,8 +133,8 @@ public class LifeBaseV2 : MonoBehaviour
 
     void CalculateSex(){
         // Sex is determined by DNA
-        // Average the first 4 genes, if smaller than 0.5 its a male, if larger female
-        float x = (dna[0] + dna[1] + dna[2] + dna[3])/4;
+        // Average the first 2 genes, if smaller than 0.5 its a male, if larger female
+        float x = (dna[0] + dna[1])/2;
         if (x < .5f){sex = Sex.male;}
         else if (x > .5f){sex = Sex.female;}
         // !!!! There's the problem of x = 0.5 !!!!
