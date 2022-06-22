@@ -146,6 +146,7 @@ public class LifeBaseV2 : MonoBehaviour
         dna = new float[dnaLength];
 
         for (int i = 0; i < dnaLength; i++){
+            // Modulus 2 to alternate the parent genes (mother if even, father if odd)
             if (i % 2 == 0)
             {
                 dna[i] = this.dna[i];

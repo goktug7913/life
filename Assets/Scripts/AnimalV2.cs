@@ -12,6 +12,9 @@ public class AnimalV2 : LifeBaseV2
     public Vector3 wanderTarget;
     public float visionRange = 5f;
 
+    public float hunger;
+    public float maxHunger;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -82,6 +85,9 @@ public class AnimalV2 : LifeBaseV2
 
         speed = _speed*3;
         visionRange = _visionRange*5;
+
+        // max hunger is half of max health
+        maxHunger = maxHealth/2;
     }
 
     void OnDrawGizmos(){
