@@ -48,6 +48,7 @@ public class LifeBaseV2 : MonoBehaviour
     protected virtual void Start()
     {
         if(isGenesis){
+            // These are only called if the creature is spawned as initial population.
             GenerateDnaRandom();
             GenerateSpeciesId();
         }

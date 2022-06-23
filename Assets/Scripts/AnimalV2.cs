@@ -9,8 +9,13 @@ public class AnimalV2 : LifeBaseV2
     public float deceleration = 0f;
     public float maxSpeed = 0f;
     public float turnRate = 2f;
-    public Vector3 wanderTarget;
     public float visionRange = 5f;
+    public Vector3 wanderTarget;
+    public AnimalV2 mateTarget;
+    public bool isMating = false;
+    public float gestationTime = 0f;
+    public float gestationProgress = 0f;
+
 
     public float hunger;
     public float maxHunger;
@@ -73,18 +78,73 @@ public class AnimalV2 : LifeBaseV2
         return wanderTarget;
     }
 
-    void SeekMate()
+    void FindMate()
     {
         // This will be the seek mate function for the animal.
         // We will use the mate target to determine where the animal will move.
-        // Get opposite sex of same genus in vision range.
         
+        // Create an overlap sphere to find the mate.
+        Collider[] colliders = Physics.OverlapSphere(transform.position, visionRange);
+        foreach(Collider collider in colliders)
+        {
+            // Check to see if the collider is a mate.
+            if(collider.gameObject.GetComponent<AnimalV2>() != null
+            && collider.gameObject.GetComponent<AnimalV2>().sex != sex)
+            {
+                // We found a mate.
+                mateTarget = collider.gameObject.GetComponent<AnimalV2>();
+            }
+        }
     }
 
-    void AcceptMate()
+    void SeekMate()
+    {
+        // Check distance to mate target.
+        float distance = Vector3.Distance(transform.position, mateTarget.transform.position);
+        if (distance > 1f){
+            // We are not close enough to the mate.
+            // Move towards the mate.
+            Move(mateTarget.transform.position);
+        }
+        else{
+            // We are close enough to the mate.
+            // We will mate.
+            TryMating();
+        }
+    }
+
+    void TryMating(){
+        // Check to see if we can mate.
+        if(mateTarget.AcceptMate(this)){
+            // We can mate.
+            // We will mate.
+            if (this.sex == Sex.female)
+            {
+                // Create an offspring creature object here
+                // We ignore gestation for now
+            } else {
+                // The other mate is female. We don't have
+                // child-bearing males for now
+
+                // We should call the relevant functions on the partner
+            }
+        }
+    }
+
+    bool AcceptMate(AnimalV2 requester)
     {
         // This will be the accept mate function for the animal.
-        // We will use the mate target to determine where the animal will move.
+        if (
+            base.canReproduce &&
+            requester.canReproduce &&
+            requester.sex != sex // we ignore homosexual/asexual repro. for now (could be fun tho)
+        )
+        {
+            // We can mate.
+            return true;
+        }
+        // We cannot mate with this requester.
+        return false;
     }
 
     void GenerateAttributes()
