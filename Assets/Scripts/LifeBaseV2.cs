@@ -38,7 +38,7 @@ public class LifeBaseV2 : MonoBehaviour
     public float dnaMax = 1; // Maximum value for a gene
     public float mutationRate = 0.01f; // Chance of mutation per gene
     public float mutationAmount = 0.1f; // Amount of mutation per gene
-    public LifeBaseV2 otherParent; // Other parent of the creature
+    public LifeBaseV2 otherParent; // Other parent of the offspring
 
     public float healthCoefficient = 10f; // Coefficient for the health of the creature
     public float health = 0; // All life will have a health value.
@@ -153,22 +153,24 @@ public class LifeBaseV2 : MonoBehaviour
         // !!!! There's the problem of x = 0.5 !!!!
     }
 
-    void GenerateOffspringDna(){
+    float[] GenerateOffspringDna(){
         // This function will run on a female specimen
+        // Edited on laptop, might be broken
 
-        dna = new float[dnaLength];
+        public float[] newDna = new float[dnaLength];
 
         for (int i = 0; i < dnaLength; i++){
             // Modulus 2 to alternate the parent genes (mother if even, father if odd)
             if (i % 2 == 0)
             {
-                dna[i] = this.dna[i];
+                newDna[i] = this.dna[i];
             }
             else
             {
-                dna[i] = otherParent.dna[i];
+                newDna[i] = otherParent.dna[i];
             }
         }
+        return newDna;
     }
 
 }

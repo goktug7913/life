@@ -17,14 +17,14 @@ public class SimulationManager : MonoBehaviour
         // Spawn a pair of animals on right click.
         if (Input.GetMouseButtonDown(1))
         {
-            SpawnNewSpeciesPair(LifeBase.Genus.Animalia);
+            SpawnNewSpeciesPair(LifeBaseV2.Genus.Animalia);
         }
     }
 
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
     // Custom methods and definitions go here.
 
-    void SpawnNewSpeciesPair(LifeBase.Genus genus){
+    void SpawnNewSpeciesPair(LifeBaseV2.Genus genus){
         /* This function spawns a new species pair of given genus
         around the mouse cursor.*/
 
@@ -37,14 +37,14 @@ public class SimulationManager : MonoBehaviour
 
         // Spawn the new species pair.
         switch (genus){
-            case LifeBase.Genus.Animalia:
+            case LifeBaseV2.Genus.Animalia:
                 GameObject a1 = Instantiate(Resources.Load("Prefabs/Animal"), worldPos, Quaternion.identity) as GameObject;
                 break;
-            case LifeBase.Genus.Plantae:
+            case LifeBaseV2.Genus.Plantae:
                 // TODO
                 Debug.Log("Cannot create plant pair: not implemented yet.");
                 break;
-            case LifeBase.Genus.Fungi:
+            case LifeBaseV2.Genus.Fungi:
                 // TODO
                 Debug.Log("Cannot create fungus pair: not implemented yet.");
                 break;

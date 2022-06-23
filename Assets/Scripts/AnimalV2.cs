@@ -147,6 +147,7 @@ public class AnimalV2 : LifeBaseV2
             {
                 // Create an offspring creature object here
                 // We ignore gestation for now
+
             } else {
                 // The other mate is female. We don't have
                 // child-bearing males for now
@@ -154,6 +155,13 @@ public class AnimalV2 : LifeBaseV2
                 // We should call the relevant functions on the partner
             }
         }
+    }
+
+    AnimalV2 SpawnOffspring()
+    {
+        AnimalV2 offspring = Instantiate(Resources.Load("Prefabs/Animal"), gameObject.transform, Quaternion.identity) as GameObject; // transform might be wrong, wrote on laptop
+        
+        return offspring;
     }
 
     bool AcceptMate(AnimalV2 requester)
