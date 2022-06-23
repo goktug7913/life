@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -10,12 +11,15 @@ public class AnimalV2 : LifeBaseV2
     public float maxSpeed = 0f;
     public float turnRate = 2f;
     public float visionRange = 5f;
+    
     public Vector3 wanderTarget;
+    
     public AnimalV2 mateTarget;
     public bool isMating = false;
     public float gestationTime = 0f;
     public float gestationProgress = 0f;
 
+    public State state;
 
     public float hunger;
     public float maxHunger;
@@ -34,6 +38,27 @@ public class AnimalV2 : LifeBaseV2
     {
         base.Update();
         Wander();
+    }
+
+    void ActOnState()
+    {
+        switch (state)
+        {
+            case State.Wander:
+                Wander();
+                break;
+            default:
+                break;
+        }
+    }
+
+    void DetermineState()
+    {
+        // todo: determine state
+    }
+
+    public enum State {
+        Wander, 
     }
 
     void Move(Vector3 target)
@@ -73,7 +98,7 @@ public class AnimalV2 : LifeBaseV2
     Vector3 GetWanderTarget(){
         // This will use the sight system to get a wander target later on.
         // For now we will get a random point in vision radius.
-        Vector3 wanderTarget = transform.position + Random.insideUnitSphere * visionRange;
+        Vector3 wanderTarget = transform.position + UnityEngine.Random.insideUnitSphere * visionRange;
         wanderTarget.y = 0.5f; // We will only use the x and z coordinates. (Y will make it floaty.)
         return wanderTarget;
     }
