@@ -159,9 +159,9 @@ public class AnimalV2 : LifeBaseV2
 
     AnimalV2 SpawnOffspring()
     {
-        AnimalV2 offspring = Instantiate(Resources.Load("Prefabs/Animal"), gameObject.transform, Quaternion.identity) as GameObject; // transform might be wrong, wrote on laptop
-        
-        return offspring;
+        GameObject offspring = Instantiate(Resources.Load("Prefabs/Animal"), gameObject.transform.position, Quaternion.identity) as GameObject; // transform might be wrong, wrote on laptop
+        AnimalV2 animal = offspring.GetComponent<AnimalV2>();
+        return animal;
     }
 
     bool AcceptMate(AnimalV2 requester)

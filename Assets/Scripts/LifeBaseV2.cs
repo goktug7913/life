@@ -156,8 +156,7 @@ public class LifeBaseV2 : MonoBehaviour
     float[] GenerateOffspringDna(){
         // This function will run on a female specimen
         // Edited on laptop, might be broken
-
-        public float[] newDna = new float[dnaLength];
+        float[] newDna = new float[6];
 
         for (int i = 0; i < dnaLength; i++){
             // Modulus 2 to alternate the parent genes (mother if even, father if odd)
