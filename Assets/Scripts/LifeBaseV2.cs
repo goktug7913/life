@@ -13,7 +13,7 @@ public class LifeBaseV2 : MonoBehaviour
     public int speciesId = 0;
     public int age = 0; // Age of the creature
     public int generation = 0; // Generation of the creature (in the context of bloodline)
-    public bool isGenesis = true;
+    public bool isGenesis = false;
 
     // DNA will be an array of floats, each representing a gene
     // The length of the array will be the number of genes in the organism.
@@ -156,7 +156,7 @@ public class LifeBaseV2 : MonoBehaviour
     float[] GenerateOffspringDna(){
         // This function will run on a female specimen
         // Edited on laptop, might be broken
-        float[] newDna = new float[6];
+        float[] newDna = new float[dnaLength];
 
         for (int i = 0; i < dnaLength; i++){
             // Modulus 2 to alternate the parent genes (mother if even, father if odd)
@@ -171,5 +171,4 @@ public class LifeBaseV2 : MonoBehaviour
         }
         return newDna;
     }
-
 }

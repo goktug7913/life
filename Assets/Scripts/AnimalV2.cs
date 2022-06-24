@@ -54,11 +54,15 @@ public class AnimalV2 : LifeBaseV2
 
     void DetermineState()
     {
-        // todo: determine state
+        // if hungry, find food
+        if (hunger > maxHunger/2)
+        {
+            state = State.FindFood;
+        }
     }
 
     public enum State {
-        Wander, 
+        Wander, SeekMate, FindMate, Mate, SeekFood, FindFood, Eat, Die
     }
 
     void Move(Vector3 target)
@@ -151,7 +155,6 @@ public class AnimalV2 : LifeBaseV2
             } else {
                 // The other mate is female. We don't have
                 // child-bearing males for now
-
                 // We should call the relevant functions on the partner
             }
         }
@@ -174,6 +177,7 @@ public class AnimalV2 : LifeBaseV2
         )
         {
             // We can mate.
+            base.otherParent = requester; // base needs a ref for dna generation
             return true;
         }
         // We cannot mate with this requester.
