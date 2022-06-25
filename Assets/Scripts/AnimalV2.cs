@@ -47,6 +47,20 @@ public class AnimalV2 : LifeBaseV2
             case State.Wander:
                 Wander();
                 break;
+
+            case State.FindMate:
+                if(FindMate())
+                {
+                    state = State.SeekMate;
+                }else {
+                    Wander();
+                }
+                break;
+
+            case State.SeekMate:
+                SeekMate();
+                break;
+
             default:
                 break;
         }
@@ -54,10 +68,24 @@ public class AnimalV2 : LifeBaseV2
 
     void DetermineState()
     {
+        if (health <= 0)
+        {
+            state = State.Die;
+        }
         // if hungry, find food
         if (hunger > maxHunger/2)
         {
             state = State.FindFood;
+        }
+        // if not hungry, find mate
+        else if (hunger < maxHunger/4)
+        {
+            state = State.FindMate;
+        }
+        // if not hungry and not mating, wander
+        else
+        {
+            state = State.Wander;
         }
     }
 
@@ -107,7 +135,7 @@ public class AnimalV2 : LifeBaseV2
         return wanderTarget;
     }
 
-    void FindMate()
+    bool FindMate()
     {
         // This will be the seek mate function for the animal.
         // We will use the mate target to determine where the animal will move.
@@ -122,8 +150,10 @@ public class AnimalV2 : LifeBaseV2
             {
                 // We found a mate.
                 mateTarget = collider.gameObject.GetComponent<AnimalV2>();
+                return true;
             }
         }
+        return false; // no mate found.
     }
 
     void SeekMate()
