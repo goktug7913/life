@@ -13,20 +13,32 @@ public class LifeBaseV2 : MonoBehaviour
     public int speciesId = 0;
     public int age = 0; // Age of the creature
     public int generation = 0; // Generation of the creature (in the context of bloodline)
-    public bool isGenesis = true;
+    public bool isGenesis = false;
 
     // DNA will be an array of floats, each representing a gene
     // The length of the array will be the number of genes in the organism.
     // Length can vary depending on the organism.
 
     // The genes will be used to determine the behaviour and attributes of the organism.
+
+    /*
+    @goktug7913
+    We should implement some sort of management system to handle
+    which genes affect which attributes, because right now the genes
+    are hardcoded for attributes, some reside in this class, and some
+    reside in the child class.
+
+    This will be a problem for the future, because we will need to
+    be able to add new genes to the organism.
+    */
+
     public float[] dna;
     public int dnaLength = 20;
     public float dnaMin = 0; // Minimum value for a gene
     public float dnaMax = 1; // Maximum value for a gene
     public float mutationRate = 0.01f; // Chance of mutation per gene
     public float mutationAmount = 0.1f; // Amount of mutation per gene
-    public LifeBaseV2 otherParent; // Other parent of the creature
+    public LifeBaseV2 otherParent; // Other parent of the offspring
 
     public float healthCoefficient = 10f; // Coefficient for the health of the creature
     public float health = 0; // All life will have a health value.
@@ -48,6 +60,7 @@ public class LifeBaseV2 : MonoBehaviour
     protected virtual void Start()
     {
         if(isGenesis){
+            // These are only called if the creature is spawned as initial population.
             GenerateDnaRandom();
             GenerateSpeciesId();
         }
@@ -140,22 +153,22 @@ public class LifeBaseV2 : MonoBehaviour
         // !!!! There's the problem of x = 0.5 !!!!
     }
 
-    void GenerateOffspringDna(){
+    float[] GenerateOffspringDna(){
         // This function will run on a female specimen
-
-        dna = new float[dnaLength];
+        // Edited on laptop, might be broken
+        float[] newDna = new float[dnaLength];
 
         for (int i = 0; i < dnaLength; i++){
             // Modulus 2 to alternate the parent genes (mother if even, father if odd)
             if (i % 2 == 0)
             {
-                dna[i] = this.dna[i];
+                newDna[i] = this.dna[i];
             }
             else
             {
-                dna[i] = otherParent.dna[i];
+                newDna[i] = otherParent.dna[i];
             }
         }
+        return newDna;
     }
-
 }
