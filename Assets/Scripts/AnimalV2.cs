@@ -1,6 +1,3 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class AnimalV2 : LifeBaseV2
@@ -73,7 +70,7 @@ public class AnimalV2 : LifeBaseV2
             state = State.Die;
         }
         // if hungry, find food
-        if (hunger > maxHunger/2)
+        if (hunger > maxHunger/2) // @goktug7913: Threshold is hardcoded for now.
         {
             state = State.FindFood;
         }
