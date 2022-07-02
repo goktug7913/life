@@ -15,6 +15,7 @@ public class AnimalV2 : LifeBaseV2
     public bool isMating = false;
     public float gestationTime = 0f;
     public float gestationProgress = 0f;
+    public bool debug_mateFlag = false;
 
     public State state;
 
@@ -85,8 +86,14 @@ public class AnimalV2 : LifeBaseV2
         {
             state = State.FindFood;
         }
+        if (mateTarget != null)
+        {
+            state = State.SeekMate;
+        }
         // if not hungry and has no mate, find mate
-        else if (hunger < maxHunger/4 && mateTarget == null)
+        else if (hunger < maxHunger/4
+        && mateTarget == null
+        && debug_mateFlag == false) // Debug check to only mate once
         {
             state = State.FindMate;
         }
@@ -209,7 +216,7 @@ public class AnimalV2 : LifeBaseV2
 
                 mateTarget.SpawnOffspring();
             }
-            
+
         mateTarget.mateTarget = null; // Probably bad place to handle this?
         mateTarget = null;
         }
@@ -217,8 +224,16 @@ public class AnimalV2 : LifeBaseV2
 
     AnimalV2 SpawnOffspring()
     {
+        if (debug_mateFlag == true){
+            // Jank fix to prevent spawning every frame.
+            return null;
+        }
+
         GameObject offspring = Instantiate(Resources.Load("Prefabs/Animal"), gameObject.transform.position, Quaternion.identity) as GameObject; // transform might be wrong, wrote on laptop
         AnimalV2 animal = offspring.GetComponent<AnimalV2>();
+
+        debug_mateFlag = true; // Debug check to only mate once
+
         return animal;
     }
 
