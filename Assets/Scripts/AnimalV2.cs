@@ -34,7 +34,8 @@ public class AnimalV2 : LifeBaseV2
     void Update()
     {
         base.Update();
-        Wander();
+        DetermineState();
+        ActOnState();
     }
 
     void ActOnState()
@@ -67,7 +68,7 @@ public class AnimalV2 : LifeBaseV2
             case State.Eat:
                 Eat();
                 break;
-                
+
             default:
                 break;
         }
@@ -84,8 +85,8 @@ public class AnimalV2 : LifeBaseV2
         {
             state = State.FindFood;
         }
-        // if not hungry, find mate
-        else if (hunger < maxHunger/4)
+        // if not hungry and has no mate, find mate
+        else if (hunger < maxHunger/4 && mateTarget == null)
         {
             state = State.FindMate;
         }
@@ -161,9 +162,12 @@ public class AnimalV2 : LifeBaseV2
         {
             // Check to see if the collider is a mate.
             if(collider.gameObject.GetComponent<AnimalV2>() != null
-            && collider.gameObject.GetComponent<AnimalV2>().sex != sex)
+            && collider.gameObject.GetComponent<AnimalV2>().sex != sex
+            // For now we will check if the target already has a mate.
+            // Later on, we'll change this to a boolean which is determined by DNA
+            && collider.gameObject.GetComponent<AnimalV2>().mateTarget == null)
             {
-                // We found a mate.
+                // We found an available mate.
                 mateTarget = collider.gameObject.GetComponent<AnimalV2>();
                 return true;
             }
@@ -197,11 +201,17 @@ public class AnimalV2 : LifeBaseV2
                 // Create an offspring creature object here
                 // We ignore gestation for now
 
+                SpawnOffspring();
             } else {
                 // The other mate is female. We don't have
                 // child-bearing males for now
                 // We should call the relevant functions on the partner
+
+                mateTarget.SpawnOffspring();
             }
+            
+        mateTarget.mateTarget = null; // Probably bad place to handle this?
+        mateTarget = null;
         }
     }
 
@@ -250,12 +260,32 @@ public class AnimalV2 : LifeBaseV2
         // This will draw the vision range and hearing range of the animal.
         Gizmos.color = new Color(1, 0, 0, 0.5f);
         Gizmos.DrawWireSphere(transform.position, visionRange);
-        if (wanderTarget != null && wanderTarget != Vector3.zero)
+
+        switch (state)
         {
-            Gizmos.color = new Color(0, 1, 0, 0.5f);
-            Gizmos.DrawLine(transform.position, wanderTarget);
-            Gizmos.color = new Color(0, 0, 1, 0.5f);
-            Gizmos.DrawWireCube(wanderTarget, new Vector3(1, 1, 1));
+            case State.Wander:
+                DrawMovementDebug(wanderTarget);
+                break;
+
+            case State.FindMate:
+                DrawMovementDebug(wanderTarget);
+                break;
+
+            case State.SeekMate:
+                DrawMovementDebug(mateTarget.transform.position);
+                break;
+
+            default:
+
+                break;
         }
+    }
+
+    void DrawMovementDebug(Vector3 target)
+    {
+        Gizmos.color = new Color(0, 1, 0, 0.5f);
+        Gizmos.DrawLine(transform.position, target);
+        Gizmos.color = new Color(0, 0, 1, 0.5f);
+        Gizmos.DrawWireCube(target, new Vector3(1, 1, 1));
     }
 }
