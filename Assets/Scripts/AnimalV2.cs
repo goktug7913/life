@@ -48,8 +48,10 @@ public class AnimalV2 : LifeBaseV2
             case State.FindMate:
                 if(FindMate())
                 {
+                    // If we found a mate, we will approach it.
                     state = State.SeekMate;
                 }else {
+                    // We will move around randomly if we can't find a mate.
                     Wander();
                 }
                 break;
@@ -58,6 +60,14 @@ public class AnimalV2 : LifeBaseV2
                 SeekMate();
                 break;
 
+            case State.FindFood:
+                FindFood();
+                break;
+
+            case State.Eat:
+                Eat();
+                break;
+                
             default:
                 break;
         }
@@ -122,6 +132,14 @@ public class AnimalV2 : LifeBaseV2
         // Move the animal in the direction of the wander target.
         transform.position += wanderDirection.normalized * speed * Time.deltaTime;
         transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, Time.deltaTime * turnRate);
+    }
+
+    void FindFood(){
+
+    }
+
+    void Eat(){
+
     }
 
     Vector3 GetWanderTarget(){
