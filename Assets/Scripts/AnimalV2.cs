@@ -1,42 +1,75 @@
 using UnityEngine;
+using System.Collections;
+using System.Collections.Generic;
 
 public class AnimalV2 : LifeBaseV2
 {
+    Rigidbody rb;
+    // - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     public float speed = 1f;
     public float acceleration = 0f;
     public float deceleration = 0f;
     public float maxSpeed = 0f;
     public float turnRate = 2f;
     public float visionRange = 5f;
-    
+    public bool use_rb_movement = true; // Development variable for switching between RigidBody movement and GameObject movement.
+    // - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     public Vector3 wanderTarget;
-    
+    // - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     public AnimalV2 mateTarget;
     public bool isMating = false;
+    public bool isPregnant = false;
     public float gestationTime = 0f;
     public float gestationProgress = 0f;
     public bool debug_mateFlag = false;
 
+    // We're gonna have a list for the previous mates which rejected mating with us.
+    // This will help us to avoid mating with the same mate twice.
+    // Parameters for this feature should be generated from DNA later on.
+    public List<AnimalV2> previousMates = new List<AnimalV2>();
+    // - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     public State state;
-
+    // - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     public float hunger;
     public float maxHunger;
 
+    // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     // Start is called before the first frame update
     void Start()
     {
         base.Start();
+
+        rb = GetComponent<Rigidbody>();
         genus = Genus.Animalia;
 
         GenerateAttributes();
     }
-
+    // - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     // Update is called once per frame
     void Update()
     {
         base.Update();
-        DetermineState();
-        ActOnState();
+        
+    }
+    // - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+    void FixedUpdate()
+    {
+        base.FixedUpdate(); // Call the base class's FixedUpdate function.
+        TickStats();        // We update the stats before we do anything else.
+        DetermineState();   // We determine the state of the creature.
+        ActOnState();       // We do whatever the creature is supposed to do in the current state.
+    }
+    // - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+    void TickStats()
+    {
+        hunger += Time.deltaTime;
+        if (hunger > maxHunger){hunger = maxHunger;}
+        
+        if (isPregnant){gestationProgress += Time.deltaTime;}
+        if (gestationProgress > gestationTime){gestationProgress = 0f; isPregnant = false;}
+
+
     }
 
     void ActOnState()
@@ -71,6 +104,7 @@ public class AnimalV2 : LifeBaseV2
                 break;
 
             default:
+                Debug.LogError("State not defined for animal: " + gameObject.name + " - State: " + state);
                 break;
         }
     }
@@ -110,9 +144,25 @@ public class AnimalV2 : LifeBaseV2
 
     void Move(Vector3 target)
     {
+        if (use_rb_movement){
+            rb_Move(target);
+        }else {
+            transform_Move(target);
+        }
+    }
+
+    private void transform_Move(Vector3 target)
+    {
         Vector3 direction = target - transform.position;
         direction.y = 0;
         transform.Translate(direction * Time.deltaTime * speed);
+    }
+
+    void rb_Move(Vector3 target)
+    {
+        Vector3 direction = target - transform.position;
+        direction.y = 0;
+        rb.AddForce(direction * Time.deltaTime * speed);
     }
 
     void Wander(){
@@ -229,7 +279,12 @@ public class AnimalV2 : LifeBaseV2
             return null;
         }
 
-        GameObject offspring = Instantiate(Resources.Load("Prefabs/Animal"), gameObject.transform.position, Quaternion.identity) as GameObject; // transform might be wrong, wrote on laptop
+        // The new animal object is created here.
+        
+        GameObject offspring = Instantiate( Resources.Load("Prefabs/Animal"),
+                                            gameObject.transform.position,
+                                            Quaternion.identity) as GameObject;
+
         AnimalV2 animal = offspring.GetComponent<AnimalV2>();
 
         debug_mateFlag = true; // Debug check to only mate once
@@ -241,13 +296,13 @@ public class AnimalV2 : LifeBaseV2
     {
         // This will be the accept mate function for the animal.
         if (
-            base.canReproduce &&
-            requester.canReproduce &&
-            requester.sex != sex // we ignore homosexual/asexual repro. for now (could be fun tho)
-        )
+            base.canReproduce       &&
+            requester.canReproduce  &&
+            requester.sex != sex    // we ignore homosexual/asexual repro. for now (could be fun tho)
+           )
         {
             // We can mate.
-            base.otherParent = requester; // base needs a ref for dna generation
+            base.otherParent = requester; // base class needs a reference for dna generation
             return true;
         }
         // We cannot mate with this requester.
@@ -272,10 +327,11 @@ public class AnimalV2 : LifeBaseV2
     }
 
     void OnDrawGizmos(){
-        // This will draw the vision range and hearing range of the animal.
+        // This will draw the vision range of the animal.
         Gizmos.color = new Color(1, 0, 0, 0.5f);
         Gizmos.DrawWireSphere(transform.position, visionRange);
 
+        // State related gizmos.
         switch (state)
         {
             case State.Wander:
@@ -291,7 +347,7 @@ public class AnimalV2 : LifeBaseV2
                 break;
 
             default:
-
+                Debug.Log("Cannot draw debug for unknown state on animal: " + gameObject.name + " - State: " + state);
                 break;
         }
     }

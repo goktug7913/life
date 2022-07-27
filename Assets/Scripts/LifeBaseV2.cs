@@ -74,7 +74,10 @@ public class LifeBaseV2 : MonoBehaviour
     {
         UpdateHealth();
     }
-
+    // - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+    protected virtual void FixedUpdate()
+    {
+    }
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
     // Custom methods and definitions go here.
     public enum Genus{
@@ -155,20 +158,24 @@ public class LifeBaseV2 : MonoBehaviour
 
     float[] GenerateOffspringDna(){
         // This function will run on a female specimen
-        // Edited on laptop, might be broken
         float[] newDna = new float[dnaLength];
 
         for (int i = 0; i < dnaLength; i++){
-            // Modulus 2 to alternate the parent genes (mother if even, father if odd)
+            // Modulus 2 to alternate the parent genes (mother if even, father if odd) ,
+            
+            // We are also going to mutate the offspring by a small amount.
+            // The mutation is applied by having a coefficient while passing on the float values.
+
             if (i % 2 == 0)
             {
-                newDna[i] = this.dna[i];
+                newDna[i] = this.dna[i] * (1 + UnityEngine.Random.Range(-mutationAmount, mutationAmount));
             }
             else
             {
-                newDna[i] = otherParent.dna[i];
+                newDna[i] = otherParent.dna[i] * (1 + UnityEngine.Random.Range(-mutationAmount, mutationAmount));
             }
         }
+        
         return newDna;
     }
 }
