@@ -49,7 +49,7 @@ public class InfoCard : MonoBehaviour
     void UpdateInfo()
     {
         // Update the information of the creature.
-        text = "Name: " + parentObj.gameObject.name + "\n" +
+        text = "Creature ID: " + parentObj.creatureId + "\n" +
                 "Age: " + parentObj.age + "\n" +
                 "Health: " + parentObj.health + "\n" +
                 "Generation: " + parentObj.generation + "\n";

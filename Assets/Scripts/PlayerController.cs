@@ -4,8 +4,15 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
+    public GameObject PlayerRoot;
+    public GameObject CameraRoot;
+    public GameObject _Camera;
+
     public float moveSpeed = 3f;
     public float zoomSpeed = 3f;
+    public float orbitSpeed = 1f;
+    private float orbitMultiplier = 1000f;
+    public bool invertY = true;
 
     // Start is called before the first frame update
     void Start()
@@ -20,18 +27,27 @@ public class PlayerController : MonoBehaviour
         float moveHorizontal = Input.GetAxis("Horizontal");
         float moveVertical = Input.GetAxis("Vertical");
         Vector3 movement = new Vector3(moveHorizontal, 0.0f, moveVertical);
-        transform.position += movement * Time.deltaTime * moveSpeed;
+        PlayerRoot.transform.position += movement * Time.deltaTime * moveSpeed;
 
-        // Hold middle mouse button to orbit
+        
         if (Input.GetMouseButton(2))
         {
-            // Get the mouse position in world space.
-            Vector3 mousePos = Input.mousePosition;
-            mousePos.z = 10;
-            Vector3 worldPos = Camera.main.ScreenToWorldPoint(mousePos);
+            // get cursor position
+            float mouseX = Input.GetAxis("Mouse X");
+            float mouseY = Input.GetAxis("Mouse Y");
 
-            // Rotate the camera to look at the mouse position.
-            transform.LookAt(worldPos);
+            // apply inversion if enabled
+            if (invertY)
+            {
+                mouseY *= -1;
+            }
+
+            // mouseX is the horizontal distance, mouseY is the vertical distance.
+            Vector3 mouseMovement = new Vector3(mouseY, 0f, mouseX) * Time.deltaTime * orbitSpeed * orbitMultiplier;
+            CameraRoot.transform.Rotate(mouseY,mouseX,0);
+
+            // we need to zero out Z axis... (fix later)
+            CameraRoot.transform.rotation = Quaternion.Euler(CameraRoot.transform.rotation.eulerAngles.x, CameraRoot.transform.rotation.eulerAngles.y, 0);
         }
 
         // scroll zoom

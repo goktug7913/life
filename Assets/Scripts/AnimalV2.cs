@@ -280,11 +280,11 @@ public class AnimalV2 : LifeBaseV2
     {
         if (debug_mateFlag == true){
             // Jank fix to prevent spawning every frame.
+            Debug.Log("Creature: " + creatureId + " already spawned offspring, cannot mate again.");
             return null;
         }
 
         // The new animal object is created here.
-        
         GameObject offspring = Instantiate( Resources.Load("Prefabs/Animal"),
                                             gameObject.transform.position,
                                             Quaternion.identity) as GameObject;
@@ -293,6 +293,7 @@ public class AnimalV2 : LifeBaseV2
 
         debug_mateFlag = true; // Debug check to only mate once
 
+        Debug.Log("Spawned offspring with ID: " + animal.creatureId + " Parents: " + this.creatureId + " and " + mateTarget.creatureId);
         return animal;
     }
 
@@ -307,9 +308,11 @@ public class AnimalV2 : LifeBaseV2
         {
             // We can mate.
             base.otherParent = requester; // base class needs a reference for dna generation
+            Debug.Log("Creature" + creatureId + " accepted mate with " + requester.creatureId);
             return true;
         }
         // We cannot mate with this requester.
+        Debug.Log("Creature " + creatureId + "Cannot mate with " + requester.creatureId);
         return false;
     }
 

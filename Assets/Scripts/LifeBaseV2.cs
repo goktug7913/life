@@ -8,6 +8,7 @@ public class LifeBaseV2 : MonoBehaviour
     // Parent class for all life objects.
     // Contains all the basic functions for all life objects.
     // Is meant to be inherited by other classes.
+    public int creatureId;
     public Genus genus = Genus.na;
     public Sex sex = Sex.na;
     public int speciesId = 0;
@@ -59,6 +60,8 @@ public class LifeBaseV2 : MonoBehaviour
     // Start is called before the first frame update
     protected virtual void Start()
     {
+        creatureId = GetInstanceID();
+        
         if(isGenesis){
             // These are only called if the creature is spawned as initial population.
             GenerateDnaRandom();
