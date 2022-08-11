@@ -5,6 +5,8 @@ using System.Collections.Generic;
 public class AnimalV2 : LifeBaseV2
 {
     Rigidbody rb;
+    public InfoCard infoCard;
+
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     public float speed = 1f;
     public float acceleration = 0f;
@@ -42,6 +44,8 @@ public class AnimalV2 : LifeBaseV2
         rb = GetComponent<Rigidbody>();
         genus = Genus.Animalia;
 
+        infoCard = GetComponentInChildren<InfoCard>();
+        infoCard.Attach(this);
         GenerateAttributes();
     }
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - -
