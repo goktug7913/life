@@ -51,7 +51,7 @@ public class LifeBaseV2 : MonoBehaviour
     // Common attributes to all life.
     public float mass = 1; // in kg
     public bool isAlive = true;
-    public bool canReproduce = true;
+    public bool canReproduce = false;
     public bool canMove = false;
     public bool canAttack = false;
     public bool canBeAttacked = true;
@@ -78,6 +78,11 @@ public class LifeBaseV2 : MonoBehaviour
     protected virtual void Update()
     {
         UpdateHealth();
+        UpdateAge();
+        if (age > 5)
+        {
+            canReproduce = true;
+        }
     }
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     protected virtual void FixedUpdate()

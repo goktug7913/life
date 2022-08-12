@@ -128,12 +128,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f6b016d3f2c016f47a98b6e349200678, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  creatureId: 0
   genus: 3
   sex: 2
   speciesId: 0
   age: 0
   generation: 0
   isGenesis: 1
+  infoCard: {fileID: 0}
   dna: []
   dnaLength: 20
   dnaMin: 0
@@ -148,24 +150,23 @@ MonoBehaviour:
   canRegenHealth: 0
   mass: 1
   isAlive: 1
-  canReproduce: 1
+  canReproduce: 0
   canMove: 0
   canAttack: 0
   canBeAttacked: 1
   canBeEaten: 1
-  infoCard: {fileID: 0}
   speed: 1
   acceleration: 0
   deceleration: 0
   maxSpeed: 0
   turnRate: 2
   visionRange: 5
-  use_rb_movement: 1
+  use_rb_movement: 0
   wanderTarget: {x: 0, y: 0, z: 0}
   mateTarget: {fileID: 0}
   isMating: 0
   isPregnant: 0
-  gestationTime: 0
+  gestationTime: 5
   gestationProgress: 0
   debug_mateFlag: 0
   previousMates: []

@@ -1,6 +1,7 @@
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 
 public class AnimalV2 : LifeBaseV2
 {
@@ -12,14 +13,14 @@ public class AnimalV2 : LifeBaseV2
     public float maxSpeed = 0f;
     public float turnRate = 2f;
     public float visionRange = 5f;
-    public bool use_rb_movement = true; // Development variable for switching between RigidBody movement and GameObject movement.
+    public bool use_rb_movement = false; // Development variable for switching between RigidBody movement and GameObject movement.
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     public Vector3 wanderTarget;
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     public AnimalV2 mateTarget;
     public bool isMating = false;
     public bool isPregnant = false;
-    public float gestationTime = 500f;
+    public float gestationTime = 5f;
     public float gestationProgress = 0f;
     public bool debug_mateFlag = false;
 
@@ -51,15 +52,15 @@ public class AnimalV2 : LifeBaseV2
     void Update()
     {
         base.Update();
+        TickStats();        // We update the stats before we do anything else.
+        DetermineState();   // We determine the state of the creature.
+        ActOnState();       // We do whatever the creature is supposed to do in the current state.
         
     }
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     void FixedUpdate()
     {
         base.FixedUpdate(); // Call the base class's FixedUpdate function.
-        TickStats();        // We update the stats before we do anything else.
-        DetermineState();   // We determine the state of the creature.
-        ActOnState();       // We do whatever the creature is supposed to do in the current state.
     }
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
@@ -162,16 +163,28 @@ public class AnimalV2 : LifeBaseV2
 
     private void transform_Move(Vector3 target)
     {
+        /*
         Vector3 direction = target - transform.position;
         direction.y = 0;
         transform.Translate(direction * Time.deltaTime * speed);
+        */
+
+        Vector3 moveDirection = target - transform.position;
+        Quaternion lookRotation = Quaternion.LookRotation(moveDirection);
+
+        // Do not rotate vertically.
+        lookRotation.x = 0;
+
+        // Move the animal in the direction of the wander target.
+        transform.position += moveDirection.normalized * speed * Time.deltaTime;
+        transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, Time.deltaTime * turnRate);
     }
 
     void rb_Move(Vector3 target)
     {
         Vector3 direction = target - transform.position;
         direction.y = 0;
-        rb.AddForce(direction * Time.deltaTime * speed);
+        rb.AddForce(direction * Time.deltaTime * speed * 1000f);
     }
 
     void Wander(){
@@ -190,6 +203,9 @@ public class AnimalV2 : LifeBaseV2
             wanderTarget = GetWanderTarget();
         }
 
+        Move(wanderTarget);
+
+        /*
         Vector3 wanderDirection = wanderTarget - transform.position;
         Quaternion lookRotation = Quaternion.LookRotation(wanderDirection);
 
@@ -199,6 +215,7 @@ public class AnimalV2 : LifeBaseV2
         // Move the animal in the direction of the wander target.
         transform.position += wanderDirection.normalized * speed * Time.deltaTime;
         transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, Time.deltaTime * turnRate);
+        */
     }
 
     void FindFood(){
@@ -249,19 +266,19 @@ public class AnimalV2 : LifeBaseV2
     void SeekMate()
     {
         // Check distance to mate target.
-        float distance = Vector3.Distance(transform.position, mateTarget.transform.position);
-        Debug.Log("SeekMate - Distance: " + distance);
-        if (distance > 3f){
+        float distance = Vector3.Distance(gameObject.transform.position, mateTarget.gameObject.transform.position);
+        if (distance > 1f){
             // We are not close enough to the mate.
             // Move towards the mate.
             Move(mateTarget.transform.position);
-            Debug.Log(creatureId + " move to mate");
+            return;
         }
-        else if(distance <= 5f){
+        else if(distance <= 1.5f){
             // We are close enough to the mate.
             // We will mate.
             Debug.Log(creatureId + " try to mate");
             TryMating();
+            return;
         }
     }
 
