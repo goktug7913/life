@@ -12,9 +12,10 @@ public class LifeBaseV2 : MonoBehaviour
     public Genus genus = Genus.na;
     public Sex sex = Sex.na;
     public int speciesId = 0;
-    public int age = 0; // Age of the creature
+    public float age = 0; // Age of the creature in seconds
     public int generation = 0; // Generation of the creature (in the context of bloodline)
     public bool isGenesis = false;
+    public InfoCard infoCard;
 
     // DNA will be an array of floats, each representing a gene
     // The length of the array will be the number of genes in the organism.
@@ -60,8 +61,9 @@ public class LifeBaseV2 : MonoBehaviour
     // Start is called before the first frame update
     protected virtual void Start()
     {
+        AddTags();
         creatureId = GetInstanceID();
-        
+
         if(isGenesis){
             // These are only called if the creature is spawned as initial population.
             GenerateDnaRandom();
@@ -97,6 +99,12 @@ public class LifeBaseV2 : MonoBehaviour
         male,
         female,
         na,
+    }
+
+    // add tags to the life object
+    public void AddTags()
+    {
+        gameObject.tag = "Life";
     }
 
     void GenerateSpeciesId()
@@ -137,10 +145,12 @@ public class LifeBaseV2 : MonoBehaviour
         }
     }
 
-    void HandleDeath(){
-        // Log with id of the creature.
-        Debug.Log("Creature " + gameObject.GetInstanceID() + " has died.");
+    void UpdateAge(){
+        // Age is in seconds.
+        age += Time.deltaTime;
+    }
 
+    void HandleDeath(){
         isAlive = false; // Not alive anymore.
         canReproduce = false; // We can't reproduce anymore.    
         canMove = false; // We can't move anymore.
@@ -148,6 +158,11 @@ public class LifeBaseV2 : MonoBehaviour
         canBeAttacked = false; // (Assumption) We can't be attacked anymore.
         canBeEaten = true; // We can be eaten in this state. (Not recommended :P)
         canRegenHealth = false; // We can't regenerate health anymore.
+
+        // Log with id of the creature.
+        Debug.Log("Creature " + creatureId + " has died.");
+        // Destroy the object.
+        Destroy(gameObject);
     }
 
     void CalculateSex(){
@@ -180,5 +195,16 @@ public class LifeBaseV2 : MonoBehaviour
         }
         
         return newDna;
+    }
+
+    public int CalculateOffspringGeneration()
+    {
+        // this needs better design.
+        if(generation > otherParent.generation){
+            return generation++;
+        }
+        else{
+            return otherParent.generation++;
+        }
     }
 }

@@ -9,7 +9,7 @@ public class PlayerController : MonoBehaviour
     public GameObject CameraRoot;
     public GameObject _Camera;
 
-    public float moveSpeed = 3f;
+    public float moveSpeed = 1f;
     public float zoomSpeed = 5000f;
     public float orbitSpeed = 1f;
     private float orbitMultiplier = 1000f;
@@ -19,6 +19,8 @@ public class PlayerController : MonoBehaviour
     public bool canMove = true;
     public bool canZoom = true;
     public bool canOrbit = true;
+
+    List<LifeBaseV2> selectedLife;
 
     // Start is called before the first frame update
     void Start()
@@ -32,6 +34,51 @@ public class PlayerController : MonoBehaviour
         CameraMove();
         CameraOrbit();
         ScrollZoom();
+    }
+
+    void SelectLife()
+    {
+        // Basic selection system.
+        // Selects a life if you click on it.
+        // Deselects all when you click on nothing.
+        // Deselects all when you click on another life.
+        // Adds selection if CTRL is held.
+        // Removes selection if SHIFT is held.
+
+        if (Input.GetMouseButtonDown(0))
+        {
+            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            RaycastHit hit;
+            if (Physics.Raycast(ray, out hit))
+            {
+                if (hit.transform.gameObject.tag == "Life")
+                {
+                    if (Input.GetKey(KeyCode.LeftControl))
+                    {
+                        if (!selectedLife.Contains(hit.transform.gameObject.GetComponent<LifeBaseV2>()))
+                        {
+                            selectedLife.Add(hit.transform.gameObject.GetComponent<LifeBaseV2>());
+                        }
+                    }
+                    else if (Input.GetKey(KeyCode.LeftShift))
+                    {
+                        if (selectedLife.Contains(hit.transform.gameObject.GetComponent<LifeBaseV2>()))
+                        {
+                            selectedLife.Remove(hit.transform.gameObject.GetComponent<LifeBaseV2>());
+                        }
+                    }
+                    else
+                    {
+                        selectedLife.Clear();
+                        selectedLife.Add(hit.transform.gameObject.GetComponent<LifeBaseV2>());
+                    }
+                }
+                else
+                {
+                    selectedLife.Clear();
+                }
+            }
+        }
     }
 
     void CameraMove()
@@ -50,7 +97,7 @@ public class PlayerController : MonoBehaviour
         movement = Quaternion.Euler(0, CameraRoot.transform.rotation.eulerAngles.y, 0) * movement;
 
         // add modifiers and move.
-        movement = movement * moveSpeed * Time.deltaTime;
+        movement = movement * moveSpeed * moveMultiplier *  Time.deltaTime;
         PlayerRoot.transform.Translate(movement);
     }
 

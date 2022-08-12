@@ -5,8 +5,6 @@ using System.Collections.Generic;
 public class AnimalV2 : LifeBaseV2
 {
     Rigidbody rb;
-    public InfoCard infoCard;
-
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     public float speed = 1f;
     public float acceleration = 0f;
@@ -21,7 +19,7 @@ public class AnimalV2 : LifeBaseV2
     public AnimalV2 mateTarget;
     public bool isMating = false;
     public bool isPregnant = false;
-    public float gestationTime = 0f;
+    public float gestationTime = 500f;
     public float gestationProgress = 0f;
     public bool debug_mateFlag = false;
 
@@ -67,13 +65,15 @@ public class AnimalV2 : LifeBaseV2
 
     void TickStats()
     {
-        hunger += Time.deltaTime;
-        if (hunger > maxHunger){hunger = maxHunger;}
-        
-        if (isPregnant){gestationProgress += Time.deltaTime;}
-        if (gestationProgress > gestationTime){gestationProgress = 0f; isPregnant = false;}
-
-
+        // We can extract this bit to its own function later on, like gestation.
+        //hunger += Time.deltaTime/10f; // slow down the hunger.
+        if (hunger > maxHunger){
+            // Clamp to maxHunger and start losing health.
+            hunger = maxHunger;
+            health -= Time.deltaTime/10f; // slow down the health loss.
+        } 
+    
+        if(isPregnant){TickGestation();}
     }
 
     void ActOnState()
@@ -118,27 +118,32 @@ public class AnimalV2 : LifeBaseV2
         if (health <= 0)
         {
             state = State.Die;
+            return;
         }
         // if hungry, find food
         if (hunger > maxHunger/2) // @goktug7913: Threshold is hardcoded for now.
         {
             state = State.FindFood;
+            return;
         }
         if (mateTarget != null)
         {
             state = State.SeekMate;
+            return;
         }
         // if not hungry and has no mate, find mate
         else if (hunger < maxHunger/4
-        && mateTarget == null
-        && debug_mateFlag == false) // Debug check to only mate once
+                && mateTarget == null
+                && debug_mateFlag == false) // Debug check to only mate once
         {
             state = State.FindMate;
+            return;
         }
         // if not hungry and not mating, wander
         else
         {
             state = State.Wander;
+            return;
         }
     }
 
@@ -222,11 +227,16 @@ public class AnimalV2 : LifeBaseV2
         foreach(Collider collider in colliders)
         {
             // Check to see if the collider is a mate.
-            if(collider.gameObject.GetComponent<AnimalV2>() != null
+            if(collider.gameObject != this.gameObject
+            && collider.gameObject.GetComponent<AnimalV2>() != null
             && collider.gameObject.GetComponent<AnimalV2>().sex != sex
             // For now we will check if the target already has a mate.
             // Later on, we'll change this to a boolean which is determined by DNA
-            && collider.gameObject.GetComponent<AnimalV2>().mateTarget == null)
+            && (
+                collider.gameObject.GetComponent<AnimalV2>().mateTarget == null ||
+                collider.gameObject.GetComponent<AnimalV2>().mateTarget == this
+                )
+            )
             {
                 // We found an available mate.
                 mateTarget = collider.gameObject.GetComponent<AnimalV2>();
@@ -240,39 +250,58 @@ public class AnimalV2 : LifeBaseV2
     {
         // Check distance to mate target.
         float distance = Vector3.Distance(transform.position, mateTarget.transform.position);
-        if (distance > 1f){
+        Debug.Log("SeekMate - Distance: " + distance);
+        if (distance > 3f){
             // We are not close enough to the mate.
             // Move towards the mate.
             Move(mateTarget.transform.position);
+            Debug.Log(creatureId + " move to mate");
         }
-        else{
+        else if(distance <= 5f){
             // We are close enough to the mate.
             // We will mate.
+            Debug.Log(creatureId + " try to mate");
             TryMating();
         }
     }
 
     void TryMating(){
         // Check to see if we can mate.
-        if(mateTarget.AcceptMate(this)){
+        if(mateTarget.AcceptMate(this) && isMating == false){
             // We can mate.
-            // We will mate.
             if (this.sex == Sex.female)
             {
-                // Create an offspring creature object here
-                // We ignore gestation for now
-
-                SpawnOffspring();
+                // Female starts gestation
+                StartGestation();
+                isMating = true;
             } else {
                 // The other mate is female. We don't have
                 // child-bearing males for now
                 // We should call the relevant functions on the partner
 
-                mateTarget.SpawnOffspring();
+                mateTarget.otherParent = this; // I think this is not set at this point.
+                mateTarget.StartGestation();
+                mateTarget.isMating = true;
             }
 
         mateTarget.mateTarget = null; // Probably bad place to handle this?
         mateTarget = null;
+        }
+    }
+
+    void StartGestation(){
+        // We will start the gestation period.
+        isPregnant = true;
+    }
+
+    void TickGestation(){
+        // This will be the gestation function for the animal.
+        gestationProgress += Time.deltaTime;
+        if(gestationProgress >= gestationTime){
+            // We are ready
+            SpawnOffspring();
+            gestationProgress = 0;
+            isPregnant = false;
         }
     }
 
@@ -291,7 +320,10 @@ public class AnimalV2 : LifeBaseV2
 
         AnimalV2 animal = offspring.GetComponent<AnimalV2>();
 
+        animal.generation = CalculateOffspringGeneration();
+
         debug_mateFlag = true; // Debug check to only mate once
+        mateTarget.debug_mateFlag = true; // Debug check to only mate once
 
         Debug.Log("Spawned offspring with ID: " + animal.creatureId + " Parents: " + this.creatureId + " and " + mateTarget.creatureId);
         return animal;
@@ -326,8 +358,8 @@ public class AnimalV2 : LifeBaseV2
         // We will use avg*5 of 5 and 6 for vision range
         float _visionRange = (dna[7] + dna[8])/2;
 
-        speed = _speed*3;
-        visionRange = _visionRange*5;
+        speed = _speed*4;
+        visionRange = _visionRange*25;
 
         // max hunger is half of max health
         maxHunger = maxHealth/2;
