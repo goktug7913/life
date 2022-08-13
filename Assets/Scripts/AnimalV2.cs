@@ -20,9 +20,18 @@ public class AnimalV2 : LifeBaseV2
     public AnimalV2 mateTarget;
     public bool isMating = false;
     public bool isPregnant = false;
+    public bool hasMatedRecently = false;
+
     public float gestationTime = 5f;
     public float gestationProgress = 0f;
+
+    public float matingProgress = 0f;
+    public float matingTime = 5f;
+
+    public float matingCooldownProgress = 0f;
+    public float matingCooldownTime = 5f;
     public bool debug_mateFlag = false;
+    // - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
     // We're gonna have a list for the previous mates which rejected mating with us.
     // This will help us to avoid mating with the same mate twice.
@@ -66,15 +75,40 @@ public class AnimalV2 : LifeBaseV2
 
     void TickStats()
     {
-        // We can extract this bit to its own function later on, like gestation.
-        //hunger += Time.deltaTime/10f; // slow down the hunger.
+        TickHunger(); // Hunger never stops...
+        if(isPregnant){TickGestation();}
+        if(isMating){TickMating();}
+        if(matingCooldownProgress > 0){TickMatingCooldown();}
+    }
+
+    void TickHunger()
+    {
+        hunger += Time.deltaTime/50f; // slow down the hunger.
         if (hunger > maxHunger){
             // Clamp to maxHunger and start losing health.
             hunger = maxHunger;
             health -= Time.deltaTime/10f; // slow down the health loss.
         } 
-    
-        if(isPregnant){TickGestation();}
+    }
+
+    void TickMatingCooldown()
+    {
+        matingCooldownProgress += Time.deltaTime;
+        if(matingCooldownProgress > matingCooldownTime){
+            matingCooldownProgress = 0f;
+            hasMatedRecently = false;
+        }
+    }
+
+    void TickMating()
+    {
+        matingProgress += Time.deltaTime;
+        if(matingProgress > matingTime){
+            matingProgress = 0f;
+            isMating = false;
+            isPregnant = true;
+            gestationProgress = 0f;
+        }
     }
 
     void ActOnState()
@@ -182,6 +216,8 @@ public class AnimalV2 : LifeBaseV2
 
     void rb_Move(Vector3 target)
     {
+        // THIS IS EXPERIMENTAL CODE.
+        // CAN BE USED BY CHANGING THE USE_RB_MOVEMENT FLAG.
         Vector3 direction = target - transform.position;
         direction.y = 0;
         rb.AddForce(direction * Time.deltaTime * speed * 1000f);
@@ -315,10 +351,10 @@ public class AnimalV2 : LifeBaseV2
         // This will be the gestation function for the animal.
         gestationProgress += Time.deltaTime;
         if(gestationProgress >= gestationTime){
-            // We are ready
-            SpawnOffspring();
+            // We are ready to give birth.
             gestationProgress = 0;
             isPregnant = false;
+            Invoke("SpawnOffspring", 1);
         }
     }
 
