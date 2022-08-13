@@ -167,13 +167,12 @@ MonoBehaviour:
   isMating: 0
   isPregnant: 0
   hasMatedRecently: 0
-  gestationTime: 5
   gestationProgress: 0
+  gestationTime: 5
   matingProgress: 0
   matingTime: 5
   matingCooldownProgress: 0
-  matingCooldownTime: 5
-  debug_mateFlag: 0
+  matingCooldownTime: 15
   previousMates: []
   state: 0
   hunger: 0

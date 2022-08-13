@@ -1,7 +1,6 @@
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 
 public class AnimalV2 : LifeBaseV2
 {
@@ -22,15 +21,14 @@ public class AnimalV2 : LifeBaseV2
     public bool isPregnant = false;
     public bool hasMatedRecently = false;
 
-    public float gestationTime = 5f;
     public float gestationProgress = 0f;
+    public float gestationTime = 5f; // Make this based on DNA later.
 
     public float matingProgress = 0f;
-    public float matingTime = 5f;
+    public float matingTime = 5f; // Make this based on DNA later.
 
     public float matingCooldownProgress = 0f;
-    public float matingCooldownTime = 5f;
-    public bool debug_mateFlag = false;
+    public float matingCooldownTime = 15f; // Make this based on DNA later.
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
     // We're gonna have a list for the previous mates which rejected mating with us.
@@ -42,11 +40,10 @@ public class AnimalV2 : LifeBaseV2
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     public float hunger;
     public float maxHunger;
-
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-    // Start is called before the first frame update
-    void Start()
+    void Awake()
     {
+        base.Awake();
         base.Start();
 
         rb = GetComponent<Rigidbody>();
@@ -55,6 +52,23 @@ public class AnimalV2 : LifeBaseV2
         infoCard = GetComponentInChildren<InfoCard>();
         infoCard.Attach(this);
         GenerateAttributes();
+
+        // if male set color blue
+        switch (sex){
+            case Sex.male:
+            GetComponent<MeshRenderer>().material.color = Color.blue;
+            break;
+            
+            case Sex.female:
+            GetComponent<MeshRenderer>().material.color = Color.magenta;
+            break;
+        }
+    }
+    // - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+    // Start is called before the first frame update
+    void Start()
+    {
+        
     }
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     // Update is called once per frame
@@ -72,13 +86,13 @@ public class AnimalV2 : LifeBaseV2
     {
         TickHunger(); // Hunger never stops...
         if(isPregnant){TickGestation();}
-        if(matingCooldownProgress > 0){TickMatingCooldown();}
+        if(hasMatedRecently){TickMatingCooldown();}
     }
 
     void TickHunger()
     {
         hunger += Time.deltaTime/50f; // slow down the hunger.
-        if (hunger > maxHunger){
+        if (hunger >= maxHunger){
             // Clamp to maxHunger and start losing health.
             hunger = maxHunger;
             health -= Time.deltaTime/10f; // slow down the health loss.
@@ -88,7 +102,7 @@ public class AnimalV2 : LifeBaseV2
     void TickMatingCooldown()
     {
         matingCooldownProgress += Time.deltaTime;
-        if(matingCooldownProgress > matingCooldownTime){
+        if(matingCooldownProgress >= matingCooldownTime){
             matingCooldownProgress = 0f;
             hasMatedRecently = false;
         }
@@ -117,14 +131,14 @@ public class AnimalV2 : LifeBaseV2
                 if(FindMate())
                 {
                     // If we found a mate, we will approach it.
-                    state = State.SeekMate;
+                    state = State.GoToMate;
                 }else {
                     // We will move around randomly if we can't find a mate.
                     Wander();
                 }
                 break;
 
-            case State.SeekMate:
+            case State.GoToMate:
                 SeekMate();
                 break;
 
@@ -155,18 +169,24 @@ public class AnimalV2 : LifeBaseV2
         // if hungry, find food
         if (hunger > maxHunger/2) // @goktug7913: Threshold is hardcoded for now.
         {
-            state = State.FindFood;
+            //Commented to disable for development.
+            //state = State.FindFood;
+            return;
+        }
+        if (isMating)
+        {
+            state = State.Mate;
             return;
         }
         if (mateTarget != null && !hasMatedRecently)
         {
-            state = State.SeekMate;
+            state = State.GoToMate;
             return;
         }
         // if not hungry and has no mate, find mate
         else if (hunger < maxHunger/4
                 && mateTarget == null
-                && debug_mateFlag == false) // Debug check to only mate once
+                && !hasMatedRecently)
         {
             state = State.FindMate;
             return;
@@ -180,7 +200,7 @@ public class AnimalV2 : LifeBaseV2
     }
 
     public enum State {
-        Wander, SeekMate, FindMate, Mate, SeekFood, FindFood, Eat, Die
+        Wander, GoToMate, FindMate, Mate, GoToFood, FindFood, Eat, Die
     }
 
     void Move(Vector3 target)
@@ -251,15 +271,16 @@ public class AnimalV2 : LifeBaseV2
         */
     }
 
-    void FindFood(){
-
+    void FindFood()
+    {
     }
 
-    void Eat(){
-
+    void Eat()
+    {
     }
 
-    Vector3 GetWanderTarget(){
+    Vector3 GetWanderTarget()
+    {
         // This will use the sight system to get a wander target later on.
         // For now we will get a random point in vision radius.
         Vector3 wanderTarget = transform.position + UnityEngine.Random.insideUnitSphere * visionRange;
@@ -282,6 +303,7 @@ public class AnimalV2 : LifeBaseV2
             && collider.gameObject.GetComponent<AnimalV2>().sex != sex
             // For now we will check if the target already has a mate.
             // Later on, we'll change this to a boolean which is determined by DNA
+            && collider.gameObject.GetComponent<AnimalV2>().canReproduce
             && (
                 collider.gameObject.GetComponent<AnimalV2>().mateTarget == null ||
                 collider.gameObject.GetComponent<AnimalV2>().mateTarget == this
@@ -300,13 +322,13 @@ public class AnimalV2 : LifeBaseV2
     {
         // Check distance to mate target.
         float distance = Vector3.Distance(gameObject.transform.position, mateTarget.gameObject.transform.position);
-        if (distance > 1f){
+        if (distance > 3f){
             // We are not close enough to the mate.
             // Move towards the mate.
             Move(mateTarget.transform.position);
             return;
         }
-        else if(distance <= 1.5f){
+        else if(distance <= 4f){
             // We are close enough to the mate.
             // We will mate.
             Debug.Log(creatureId + " try to mate");
@@ -317,14 +339,19 @@ public class AnimalV2 : LifeBaseV2
 
     void TryMating(){
         // Check to see if we can mate.
-        if(mateTarget.AcceptMate(this) && isMating == false){
+        if(!hasMatedRecently && isMating == false && mateTarget.AcceptMate(this))
+        {
             // We can mate.
             if (this.sex == Sex.female)
             {
                 // Female starts gestation
+                otherParent = mateTarget; // This needs to be refactored
                 StartGestation();
                 isMating = true;
-            } else {
+                hasMatedRecently = true;
+            }
+            else
+            {
                 // The other mate is female. We don't have
                 // child-bearing males for now
                 // We should call the relevant functions on the partner
@@ -332,6 +359,11 @@ public class AnimalV2 : LifeBaseV2
                 mateTarget.otherParent = this; // I think this is not set at this point.
                 mateTarget.StartGestation();
                 mateTarget.isMating = true;
+                mateTarget.hasMatedRecently = true;
+
+                // We also need to handle our state.
+                isMating = true;
+                hasMatedRecently = true;
             }
 
         mateTarget.mateTarget = null; // Probably bad place to handle this?
@@ -357,12 +389,6 @@ public class AnimalV2 : LifeBaseV2
 
     AnimalV2 SpawnOffspring()
     {
-        if (debug_mateFlag == true){
-            // Jank fix to prevent spawning every frame.
-            Debug.Log("Creature: " + creatureId + " already spawned offspring, cannot mate again.");
-            return null;
-        }
-
         // The new animal object is created here.
         GameObject offspring = Instantiate( Resources.Load("Prefabs/Animal"),
                                             gameObject.transform.position,
@@ -371,9 +397,6 @@ public class AnimalV2 : LifeBaseV2
         AnimalV2 animal = offspring.GetComponent<AnimalV2>();
 
         animal.generation = CalculateOffspringGeneration();
-
-        debug_mateFlag = true; // Debug check to only mate once
-        mateTarget.debug_mateFlag = true; // Debug check to only mate once
 
         Debug.Log("Spawned offspring with ID: " + animal.creatureId + " Parents: " + this.creatureId + " and " + mateTarget.creatureId);
         return animal;
@@ -385,6 +408,7 @@ public class AnimalV2 : LifeBaseV2
         if (
             base.canReproduce       &&
             !isPregnant             &&
+            !requester.isPregnant   &&
             requester.canReproduce  &&
             requester.sex != sex    // we ignore homosexual/asexual repro. for now (could be fun tho)
            )
@@ -432,8 +456,11 @@ public class AnimalV2 : LifeBaseV2
                 DrawMovementDebug(wanderTarget);
                 break;
 
-            case State.SeekMate:
-                DrawMovementDebug(mateTarget.transform.position);
+            case State.GoToMate:
+                if (mateTarget != null)
+                {
+                    DrawMovementDebug(mateTarget.transform.position);
+                }
                 break;
 
             default:

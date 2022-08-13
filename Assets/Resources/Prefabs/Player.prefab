@@ -302,6 +302,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   PlayerRoot: {fileID: 4589952762400310513}
   CameraRoot: {fileID: 838265874369435897}
-  _Camera: {fileID: 4589952762419944657}
+  _Camera: {fileID: 4589952762419944659}
   moveSpeed: 3
   zoomSpeed: 3
+  orbitSpeed: 1
+  invertY: 1
+  canMove: 1
+  canZoom: 1
+  canOrbit: 1

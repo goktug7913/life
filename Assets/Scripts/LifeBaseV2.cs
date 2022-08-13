@@ -56,10 +56,8 @@ public class LifeBaseV2 : MonoBehaviour
     public bool canAttack = false;
     public bool canBeAttacked = true;
     public bool canBeEaten = true;
-
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-    // Start is called before the first frame update
-    protected virtual void Start()
+    protected virtual void Awake()
     {
         AddTags();
         creatureId = GetInstanceID();
@@ -72,6 +70,11 @@ public class LifeBaseV2 : MonoBehaviour
 
         CalculateSex();
         InitStats();
+    }
+    // - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+    // Start is called before the first frame update
+    protected virtual void Start()
+    {
     }
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     // Update is called once per frame

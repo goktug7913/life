@@ -26,6 +26,7 @@ public class InfoCard : MonoBehaviour
     void Start()
     {
         SetVisibility(false); // hide the infoCard by default.
+        UpdateInfo(); // update once to initialize the text.
     }
 
     // Update is called once per frame
@@ -44,6 +45,7 @@ public class InfoCard : MonoBehaviour
     public void Attach(AnimalV2 parent){
         // This function will attach the infoCard to the parent.
         // It's called from the parent object.
+        //This might be unnecessary, but I'm keeping it for now.
         parentObj = parent;
     }
 

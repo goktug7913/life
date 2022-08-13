@@ -1,14 +1,13 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
     public GameObject PlayerRoot;
     public GameObject CameraRoot;
-    public GameObject _Camera;
+    public Camera _Camera;
 
     public float moveSpeed = 1f;
     public float zoomSpeed = 5000f;
@@ -26,13 +25,20 @@ public class PlayerController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
+        selectedLife = new List<LifeBaseV2>(); // initialize the list.
+        // Funny note: I forgot to initialize this list, and it was causing a null reference exception.
+        // It took me a few hours to find out. I was almost deleting the whole selection script.
     }
 
     // Update is called once per frame
     void Update()
     {
         SelectLife();
+        // Spawn a pair of animals on right click.
+        if (Input.GetMouseButtonDown(1))
+        {
+            SpawnNewSpeciesPair(LifeBaseV2.Genus.Animalia);
+        }
     }
 
     void FixedUpdate()
@@ -56,61 +62,36 @@ public class PlayerController : MonoBehaviour
                 Gizmos.DrawSphere(life.transform.position, 0.1f);
             }
         }
+
+        Ray ray = _Camera.ScreenPointToRay(Input.mousePosition);
+        Gizmos.color = Color.blue;
+        Gizmos.DrawRay(ray.origin, ray.direction * 100);
     }
 
     void SelectLife()
     {
         // Basic selection system.
-        // Selects a life if you click on it.
-        // Deselects all when you click on nothing.
-        // Deselects all when you click on another life.
-        // Adds selection if CTRL is held.
-        // Removes selection if SHIFT is held.
-
         if (Input.GetMouseButtonDown(0))
         {
             Debug.Log("Clicked");
-            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            Ray ray = _Camera.ScreenPointToRay(Input.mousePosition);
             RaycastHit hit;
 
             if (Physics.Raycast(ray, out hit))
             {
-                if (hit.transform.gameObject.tag == "Life")
+                Debug.Log("Hit " + hit.transform.name);
+                LifeBaseV2 lifebase = hit.transform.GetComponent<LifeBaseV2>();
+                if (lifebase)
                 {
-                    if (Input.GetKey(KeyCode.LeftControl))
+                    if (Input.GetKeyDown(KeyCode.LeftControl))
                     {
-                        // Add to selection.
-                        if (!selectedLife.Contains(hit.transform.gameObject.GetComponent<LifeBaseV2>()))
-                        {
-                            selectedLife.Add(hit.transform.gameObject.GetComponent<LifeBaseV2>());
-                            Debug.Log("Added to selection");
-                        }
-                    }
-                    else if (Input.GetKey(KeyCode.LeftShift))
-                    {
-                        // Remove from selection.
-                        if (selectedLife.Contains(hit.transform.gameObject.GetComponent<LifeBaseV2>()))
-                        {
-                            selectedLife.Remove(hit.transform.gameObject.GetComponent<LifeBaseV2>());
-                            Debug.Log("Removed from selection");
-                        }
+                        
                     }
                     else
                     {
-                        // Deselect all and select single.
                         selectedLife.Clear();
-                        selectedLife.Add(hit.transform.gameObject.GetComponent<LifeBaseV2>());
-                        Debug.Log("Selected single");
+                        selectedLife.Add(lifebase);
                     }
-                }
-                else
-                {
-                    // Deselect all if you click on nothing, iterate through all selected life and deselect them.
-                    foreach (LifeBaseV2 life in selectedLife)
-                    {
-                        life.infoCard.SetVisibility(false);
-                    }
-                    selectedLife.Clear();
                 }
 
                 // Iterate through the selected life and show the info card.
@@ -181,6 +162,34 @@ public class PlayerController : MonoBehaviour
         // move camera
         _Camera.transform.Translate(0, 0, zoom);
     }
+
+    void SpawnNewSpeciesPair(LifeBaseV2.Genus genus){
+        /* This function spawns a new species pair of given genus
+        around the mouse cursor.*/
+
+        // Get the mouse position in world space.
+        Vector3 mousePos = Input.mousePosition;
+        mousePos.z = 10;
+        Vector3 worldPos = Camera.main.ScreenToWorldPoint(mousePos);
+        // Move the Y position to the ground.
+        worldPos.y = 3;
+
+        // Spawn the new species pair.
+        switch (genus){
+            case LifeBaseV2.Genus.Animalia:
+                GameObject a1 = Instantiate(Resources.Load("Prefabs/Animal"), worldPos, Quaternion.identity) as GameObject;
+                break;
+            case LifeBaseV2.Genus.Plantae:
+                // TODO
+                Debug.Log("Cannot create plant pair: not implemented yet.");
+                break;
+            case LifeBaseV2.Genus.Fungi:
+                // TODO
+                Debug.Log("Cannot create fungus pair: not implemented yet.");
+                break;
+        }
+    }
+
 }
 
 
