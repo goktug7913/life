@@ -67,17 +67,11 @@ public class AnimalV2 : LifeBaseV2
         
     }
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-    void FixedUpdate()
-    {
-        base.FixedUpdate(); // Call the base class's FixedUpdate function.
-    }
-    // - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
     void TickStats()
     {
         TickHunger(); // Hunger never stops...
         if(isPregnant){TickGestation();}
-        if(isMating){TickMating();}
         if(matingCooldownProgress > 0){TickMatingCooldown();}
     }
 
@@ -134,6 +128,9 @@ public class AnimalV2 : LifeBaseV2
                 SeekMate();
                 break;
 
+            case State.Mate:
+                TickMating();
+                break;
             case State.FindFood:
                 FindFood();
                 break;
@@ -161,7 +158,7 @@ public class AnimalV2 : LifeBaseV2
             state = State.FindFood;
             return;
         }
-        if (mateTarget != null)
+        if (mateTarget != null && !hasMatedRecently)
         {
             state = State.SeekMate;
             return;
@@ -387,6 +384,7 @@ public class AnimalV2 : LifeBaseV2
         // This will be the accept mate function for the animal.
         if (
             base.canReproduce       &&
+            !isPregnant             &&
             requester.canReproduce  &&
             requester.sex != sex    // we ignore homosexual/asexual repro. for now (could be fun tho)
            )

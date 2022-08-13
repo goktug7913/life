@@ -84,10 +84,6 @@ public class LifeBaseV2 : MonoBehaviour
             canReproduce = true;
         }
     }
-    // - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-    protected virtual void FixedUpdate()
-    {
-    }
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
     // Custom methods and definitions go here.
     public enum Genus{

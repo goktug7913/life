@@ -247,9 +247,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f0d6f021507f601468a3527d6fbf14b5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  isVisible: 1
+  isVisible: 0
   infoCardRoot: {fileID: 4185468082904541200}
   infoCardCanvas: {fileID: 343061303504219498}
+  infoCardCanvasRenderer: {fileID: 594975106639320491}
   textObj: {fileID: 3348788415726775225}
-  meshRenderer: {fileID: 0}
   text: 

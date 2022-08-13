@@ -12,17 +12,20 @@ public class InfoCard : MonoBehaviour
     // the parent is of class animal, so we will need to refactor this later to use
     // the same infoCard class on different life objects.
     AnimalV2 parentObj;
-    public bool isVisible = true;
+    public bool isVisible = false;
 
-
+    // These are set in the editor.
+    // If something is not working properly, check these values!
     public GameObject infoCardRoot;
     public Canvas infoCardCanvas;
+    public CanvasRenderer infoCardCanvasRenderer;
     public TextMeshProUGUI textObj;
     public String text;
 
     // Start is called before the first frame update
     void Start()
     {
+        SetVisibility(false); // hide the infoCard by default.
     }
 
     // Update is called once per frame
@@ -39,11 +42,15 @@ public class InfoCard : MonoBehaviour
     }
 
     public void Attach(AnimalV2 parent){
+        // This function will attach the infoCard to the parent.
+        // It's called from the parent object.
         parentObj = parent;
     }
 
-    void SetVisibility(bool visible){
-        gameObject.SetActive(visible);
+    public void SetVisibility(bool visible){
+        // Might be a better way to do this, performance wise.
+        infoCardCanvasRenderer.SetAlpha(visible ? 1 : 0);
+        isVisible = visible;
     }
 
     void UpdateInfo()

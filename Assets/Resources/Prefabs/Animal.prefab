@@ -166,8 +166,13 @@ MonoBehaviour:
   mateTarget: {fileID: 0}
   isMating: 0
   isPregnant: 0
+  hasMatedRecently: 0
   gestationTime: 5
   gestationProgress: 0
+  matingProgress: 0
+  matingTime: 5
+  matingCooldownProgress: 0
+  matingCooldownTime: 5
   debug_mateFlag: 0
   previousMates: []
   state: 0
@@ -184,7 +189,7 @@ GameObject:
   - component: {fileID: 7475522390710612173}
   m_Layer: 0
   m_Name: Animal
-  m_TagString: Untagged
+  m_TagString: Life
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class PlayerController : MonoBehaviour
@@ -31,9 +32,30 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        SelectLife();
+    }
+
+    void FixedUpdate()
+    {
+        // I moved this to FixedUpdate because it is supposed to be more stable for the camera and movement.
         CameraMove();
         CameraOrbit();
         ScrollZoom();
+    }
+
+    void OnDrawGizmos()
+    {
+        Gizmos.color = Color.red;
+        Gizmos.DrawSphere(transform.position, 0.1f);
+
+        if (selectedLife != null)
+        {
+            foreach (LifeBaseV2 life in selectedLife)
+            {
+                Gizmos.color = Color.green;
+                Gizmos.DrawSphere(life.transform.position, 0.1f);
+            }
+        }
     }
 
     void SelectLife()
@@ -47,36 +69,55 @@ public class PlayerController : MonoBehaviour
 
         if (Input.GetMouseButtonDown(0))
         {
+            Debug.Log("Clicked");
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             RaycastHit hit;
+
             if (Physics.Raycast(ray, out hit))
             {
                 if (hit.transform.gameObject.tag == "Life")
                 {
                     if (Input.GetKey(KeyCode.LeftControl))
                     {
+                        // Add to selection.
                         if (!selectedLife.Contains(hit.transform.gameObject.GetComponent<LifeBaseV2>()))
                         {
                             selectedLife.Add(hit.transform.gameObject.GetComponent<LifeBaseV2>());
+                            Debug.Log("Added to selection");
                         }
                     }
                     else if (Input.GetKey(KeyCode.LeftShift))
                     {
+                        // Remove from selection.
                         if (selectedLife.Contains(hit.transform.gameObject.GetComponent<LifeBaseV2>()))
                         {
                             selectedLife.Remove(hit.transform.gameObject.GetComponent<LifeBaseV2>());
+                            Debug.Log("Removed from selection");
                         }
                     }
                     else
                     {
+                        // Deselect all and select single.
                         selectedLife.Clear();
                         selectedLife.Add(hit.transform.gameObject.GetComponent<LifeBaseV2>());
+                        Debug.Log("Selected single");
                     }
                 }
                 else
                 {
+                    // Deselect all if you click on nothing, iterate through all selected life and deselect them.
+                    foreach (LifeBaseV2 life in selectedLife)
+                    {
+                        life.infoCard.SetVisibility(false);
+                    }
                     selectedLife.Clear();
                 }
+
+                // Iterate through the selected life and show the info card.
+                foreach (LifeBaseV2 life in selectedLife)
+                    {
+                        life.infoCard.SetVisibility(true);
+                    }
             }
         }
     }
