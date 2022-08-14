@@ -9,8 +9,8 @@ public class PlayerController : MonoBehaviour
     [FormerlySerializedAs("CameraRoot")] public GameObject cameraRoot;
     public Camera _Camera;
 
-    public float moveSpeed = 1f;
-    public float zoomSpeed = 5000f;
+    public float moveSpeed = 3f;
+    public float zoomSpeed = 10f;
     public float orbitSpeed = 1f;
     private float orbitMultiplier = 1000f;
     private float moveMultiplier = 10f;
@@ -175,7 +175,7 @@ public class PlayerController : MonoBehaviour
         // Spawn the new species pair.
         switch (genus){
             case LifeBaseV2.Genus.Animalia:
-                var a1 = Instantiate(Resources.Load("Prefabs/Animal"), worldPos, Quaternion.identity) as GameObject;
+                Instantiate(Resources.Load("Prefabs/Animal"), worldPos, Quaternion.identity);
                 break;
             case LifeBaseV2.Genus.Plantae:
                 // TODO
