@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -24,13 +25,13 @@ public class Plant : LifeBase
     public float deathProgress = 0; // The progress of the plant's death.   
     public float deathRate = 0; // The rate at which the plant dies.
 
-    void Start()
+    private new void Start()
     {
         base.Start();       // Call the base class's Start function.
         genus = Genus.Plantae;
     }
 
-    void Update()
+    private new void Update()
     {
         base.Update();
         ManageActions();
@@ -58,9 +59,9 @@ public class Plant : LifeBase
     void UpdateState()
     {
         // Go through the actions and execute them.
-        for (int i = 0; i < currentActions.Count; i++)
+        foreach (var t in currentActions)
         {
-            switch (currentActions[i])
+            switch (t)
             {
                 case Action.Grow:
                     Grow();
@@ -77,9 +78,10 @@ public class Plant : LifeBase
                 case Action.DropSeeds:
                     DropSeeds();
                     break;
+                default:
+                    throw new ArgumentOutOfRangeException();
             }
         }
-
     }
 
     void Grow(){
@@ -91,7 +93,7 @@ public class Plant : LifeBase
         // TODO
     }
 
-    void Photosynthesize(){
+    private void Photosynthesize(){
         // Spend nutrients and water to photosynthesize.
         nutrition -= 0.1f;
         waterLevel -= 0.1f;

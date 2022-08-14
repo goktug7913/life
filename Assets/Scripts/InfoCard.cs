@@ -23,23 +23,22 @@ public class InfoCard : MonoBehaviour
     public String text;
 
     // Start is called before the first frame update
-    void Start()
+    private void Start()
     {
         SetVisibility(false); // hide the infoCard by default.
         UpdateInfo(); // update once to initialize the text.
     }
 
     // Update is called once per frame
-    void Update()
+    private void Update()
     {
-        if (isVisible)
-        {
-            // Update the information of the creature.
-            UpdateInfo();
+        if (!isVisible) return;
+        
+        // Update the information of the creature.
+        UpdateInfo();
 
-            // Always face the camera.
-            infoCardRoot.transform.LookAt(Camera.main.transform);
-        }        
+        // Always face the camera.
+        infoCardRoot.transform.LookAt(Camera.main.transform);
     }
 
     public void Attach(AnimalV2 parent){
@@ -55,7 +54,7 @@ public class InfoCard : MonoBehaviour
         isVisible = visible;
     }
 
-    void UpdateInfo()
+    private void UpdateInfo()
     {
         // Update the information of the creature.
         text = "Creature ID: "  + parentObj.creatureId + "\n" +

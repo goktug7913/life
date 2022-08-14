@@ -1,6 +1,3 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class LifeBaseV2 : MonoBehaviour
@@ -9,12 +6,12 @@ public class LifeBaseV2 : MonoBehaviour
     // Contains all the basic functions for all life objects.
     // Is meant to be inherited by other classes.
     public int creatureId;
-    public Genus genus = Genus.na;
-    public Sex sex = Sex.na;
-    public int speciesId = 0;
-    public float age = 0; // Age of the creature in seconds
-    public int generation = 0; // Generation of the creature (in the context of bloodline)
-    public bool isGenesis = false;
+    public Genus genus = Genus.Na;
+    public Sex sex = Sex.Na;
+    public int speciesId;
+    public float age; // Age of the creature in seconds
+    public int generation; // Generation of the creature (in the context of bloodline)
+    public bool isGenesis;
     public InfoCard infoCard;
 
     // DNA will be an array of floats, each representing a gene
@@ -43,10 +40,10 @@ public class LifeBaseV2 : MonoBehaviour
     public LifeBaseV2 otherParent; // Other parent of the offspring
 
     public float healthCoefficient = 10f; // Coefficient for the health of the creature
-    public float health = 0; // All life will have a health value.
-    public float maxHealth = 0; // The maximum possible health of the creature.
-    public float healthRegen = 0; // The amount of health to regenerated per second.
-    public bool canRegenHealth = false; // Whether or not the creature can regenerate health.
+    public float health; // All life will have a health value.
+    public float maxHealth; // The maximum possible health of the creature.
+    public float healthRegen; // The amount of health to regenerated per second.
+    public bool canRegenHealth; // Whether or not the creature can regenerate health.
 
     // Common attributes to all life.
     public float mass = 1; // in kg
@@ -93,40 +90,40 @@ public class LifeBaseV2 : MonoBehaviour
         Animalia,
         Plantae,
         Fungi,
-        na,
+        Na,
         // Note: More in the future?
     }
 
     // All life will have a sex, even if it doesn't classify as male or female,
     // it will enumerate to NA.
     public enum Sex{
-        male,
-        female,
-        na,
+        Male,
+        Female,
+        Na,
     }
 
     // add tags to the life object
-    public void AddTags()
+    private void AddTags()
     {
         gameObject.tag = "Life";
     }
 
-    void GenerateSpeciesId()
+    private void GenerateSpeciesId()
     {
-        speciesId = UnityEngine.Random.Range(1,9999);
+        speciesId = Random.Range(1,9999);
     }
 
-    void GenerateDnaRandom(){
+    private void GenerateDnaRandom(){
         // For now we will generate random floats
         dna = new float[dnaLength];
 
         for (int i = 0; i < dnaLength; i++){
-            dna[i] = UnityEngine.Random.Range(dnaMin, dnaMax); // terrible..
+            dna[i] = Random.Range(dnaMin, dnaMax); // terrible..
         }
         Debug.Log("Generated random DNA for: " + gameObject.name + " with length: " + dnaLength);
     }
 
-    void InitStats(){
+    private void InitStats(){
         // Initialize all stats here.
         // This will be called after the object is instantiated.
         float _mass = (dna[2]+dna[3]) / 2;
@@ -137,7 +134,7 @@ public class LifeBaseV2 : MonoBehaviour
     }
 
     // Function to calculate the health of the creature.
-    void UpdateHealth(){
+    private void UpdateHealth(){
         if(canRegenHealth){
             health += healthRegen * Time.deltaTime;
         }
@@ -149,12 +146,12 @@ public class LifeBaseV2 : MonoBehaviour
         }
     }
 
-    void UpdateAge(){
+    private void UpdateAge(){
         // Age is in seconds.
         age += Time.deltaTime;
     }
 
-    void HandleDeath(){
+    private void HandleDeath(){
         isAlive = false; // Not alive anymore.
         canReproduce = false; // We can't reproduce anymore.    
         canMove = false; // We can't move anymore.
@@ -169,12 +166,20 @@ public class LifeBaseV2 : MonoBehaviour
         Destroy(gameObject);
     }
 
-    void CalculateSex(){
+    private void CalculateSex()
+    {
         // Sex is determined by DNA
         // Average the first 2 genes, if smaller than 0.5 its a male, if larger female
         float x = (dna[0] + dna[1])/2;
-        if (x < .5f){sex = Sex.male;}
-        else if (x > .5f){sex = Sex.female;}
+        switch (x)
+        {
+            case < .5f:
+                sex = Sex.Male;
+                break;
+            case > .5f:
+                sex = Sex.Female;
+                break;
+        }
         // !!!! There's the problem of x = 0.5 !!!!
     }
 
@@ -190,25 +195,20 @@ public class LifeBaseV2 : MonoBehaviour
 
             if (i % 2 == 0)
             {
-                newDna[i] = this.dna[i] * (1 + UnityEngine.Random.Range(-mutationAmount, mutationAmount));
+                newDna[i] = this.dna[i] * (1 + Random.Range(-mutationAmount, mutationAmount));
             }
             else
             {
-                newDna[i] = otherParent.dna[i] * (1 + UnityEngine.Random.Range(-mutationAmount, mutationAmount));
+                newDna[i] = otherParent.dna[i] * (1 + Random.Range(-mutationAmount, mutationAmount));
             }
         }
         
         return newDna;
     }
 
-    public int CalculateOffspringGeneration()
+    protected int CalculateOffspringGeneration()
     {
         // this needs better design.
-        if(generation > otherParent.generation){
-            return generation++;
-        }
-        else{
-            return otherParent.generation++;
-        }
+        return generation > otherParent.generation ? generation++ : otherParent.generation++;
     }
 }

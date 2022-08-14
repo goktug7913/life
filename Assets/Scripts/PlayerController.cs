@@ -1,12 +1,12 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 public class PlayerController : MonoBehaviour
 {
-    public GameObject PlayerRoot;
-    public GameObject CameraRoot;
+    [FormerlySerializedAs("PlayerRoot")] public GameObject playerRoot;
+    [FormerlySerializedAs("CameraRoot")] public GameObject cameraRoot;
     public Camera _Camera;
 
     public float moveSpeed = 1f;
@@ -23,7 +23,7 @@ public class PlayerController : MonoBehaviour
     List<LifeBaseV2> selectedLife;
 
     // Start is called before the first frame update
-    void Start()
+    private void Start()
     {
         selectedLife = new List<LifeBaseV2>(); // initialize the list.
         // Funny note: I forgot to initialize this list, and it was causing a null reference exception.
@@ -31,7 +31,7 @@ public class PlayerController : MonoBehaviour
     }
 
     // Update is called once per frame
-    void Update()
+    private void Update()
     {
         SelectLife();
         // Spawn a pair of animals on right click.
@@ -41,7 +41,7 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    void FixedUpdate()
+    private void FixedUpdate()
     {
         // I moved this to FixedUpdate because it is supposed to be more stable for the camera and movement.
         CameraMove();
@@ -49,7 +49,7 @@ public class PlayerController : MonoBehaviour
         ScrollZoom();
     }
 
-    void OnDrawGizmos()
+    private void OnDrawGizmos()
     {
         Gizmos.color = Color.red;
         Gizmos.DrawSphere(transform.position, 0.1f);
@@ -68,42 +68,40 @@ public class PlayerController : MonoBehaviour
         Gizmos.DrawRay(ray.origin, ray.direction * 100);
     }
 
-    void SelectLife()
+    private void SelectLife()
     {
         // Basic selection system.
-        if (Input.GetMouseButtonDown(0))
+        if (!Input.GetMouseButtonDown(0)) return;
+        
+        Debug.Log("Clicked");
+        Ray ray = _Camera.ScreenPointToRay(Input.mousePosition);
+        RaycastHit hit;
+
+        if (!Physics.Raycast(ray, out hit)) return;
+        
+        Debug.Log("Hit " + hit.transform.name);
+        var lifebase = hit.transform.GetComponent<LifeBaseV2>();
+        if (lifebase)
         {
-            Debug.Log("Clicked");
-            Ray ray = _Camera.ScreenPointToRay(Input.mousePosition);
-            RaycastHit hit;
-
-            if (Physics.Raycast(ray, out hit))
+            if (Input.GetKeyDown(KeyCode.LeftControl))
             {
-                Debug.Log("Hit " + hit.transform.name);
-                LifeBaseV2 lifebase = hit.transform.GetComponent<LifeBaseV2>();
-                if (lifebase)
-                {
-                    if (Input.GetKeyDown(KeyCode.LeftControl))
-                    {
-                        
-                    }
-                    else
-                    {
-                        selectedLife.Clear();
-                        selectedLife.Add(lifebase);
-                    }
-                }
-
-                // Iterate through the selected life and show the info card.
-                foreach (LifeBaseV2 life in selectedLife)
-                    {
-                        life.infoCard.SetVisibility(true);
-                    }
+                // Todo        
             }
+            else
+            {
+                selectedLife.Clear();
+                selectedLife.Add(lifebase);
+            }
+        }
+
+        // Iterate through the selected life and show the info card.
+        foreach (var life in selectedLife)
+        {
+            life.infoCard.SetVisibility(true);
         }
     }
 
-    void CameraMove()
+    private void CameraMove()
     {
         if (!canMove){return;} // If can't move, return.
         
@@ -116,39 +114,39 @@ public class PlayerController : MonoBehaviour
         Vector3 movement = new Vector3(moveHorizontal, 0.0f, moveVertical);
 
         // rotate movement with camera.
-        movement = Quaternion.Euler(0, CameraRoot.transform.rotation.eulerAngles.y, 0) * movement;
+        movement = Quaternion.Euler(0, cameraRoot.transform.rotation.eulerAngles.y, 0) * movement;
 
         // add modifiers and move.
-        movement = movement * moveSpeed * moveMultiplier *  Time.deltaTime;
-        PlayerRoot.transform.Translate(movement);
+        movement = movement * (moveSpeed * moveMultiplier * Time.deltaTime);
+        playerRoot.transform.Translate(movement);
     }
 
-    void CameraOrbit()
+    private void CameraOrbit()
     {
-        if (!canOrbit){return;} // If can't orbit, return.
+        if (!canOrbit) return; // If can't orbit, return.
 
-        if (Input.GetMouseButton(2))
+        if (!Input.GetMouseButton(2)) return;
+        // get cursor position
+        float mouseX = Input.GetAxis("Mouse X");
+        float mouseY = Input.GetAxis("Mouse Y");
+
+        // apply inversion if enabled
+        if (invertY)
         {
-            // get cursor position
-            float mouseX = Input.GetAxis("Mouse X");
-            float mouseY = Input.GetAxis("Mouse Y");
-
-            // apply inversion if enabled
-            if (invertY)
-            {
-                mouseY *= -1;
-            }
-
-            // mouseX is the horizontal distance, mouseY is the vertical distance.
-            Vector3 mouseMovement = new Vector3(mouseY, 0f, mouseX) * Time.deltaTime * orbitSpeed * orbitMultiplier;
-            CameraRoot.transform.Rotate(mouseY,mouseX,0);
-
-            // we need to zero out Z axis... (fix later)
-            CameraRoot.transform.rotation = Quaternion.Euler(CameraRoot.transform.rotation.eulerAngles.x, CameraRoot.transform.rotation.eulerAngles.y, 0);
+            mouseY *= -1;
         }
+
+        // mouseX is the horizontal distance, mouseY is the vertical distance.
+        Vector3 mouseMovement = new Vector3(mouseY, 0f, mouseX) * (Time.deltaTime * orbitSpeed * orbitMultiplier);
+        cameraRoot.transform.Rotate(mouseY,mouseX,0);
+
+        // we need to zero out Z axis... (fix later)
+        var rotation = cameraRoot.transform.rotation;
+        rotation = Quaternion.Euler(rotation.eulerAngles.x, rotation.eulerAngles.y, 0);
+        cameraRoot.transform.rotation = rotation;
     }
 
-    void ScrollZoom()
+    private void ScrollZoom()
     {
         if (!canZoom){return;} // If can't zoom, return.
 
@@ -170,14 +168,14 @@ public class PlayerController : MonoBehaviour
         // Get the mouse position in world space.
         Vector3 mousePos = Input.mousePosition;
         mousePos.z = 10;
-        Vector3 worldPos = Camera.main.ScreenToWorldPoint(mousePos);
+        Vector3 worldPos = _Camera.ScreenToWorldPoint(mousePos);
         // Move the Y position to the ground.
         worldPos.y = 3;
 
         // Spawn the new species pair.
         switch (genus){
             case LifeBaseV2.Genus.Animalia:
-                GameObject a1 = Instantiate(Resources.Load("Prefabs/Animal"), worldPos, Quaternion.identity) as GameObject;
+                var a1 = Instantiate(Resources.Load("Prefabs/Animal"), worldPos, Quaternion.identity) as GameObject;
                 break;
             case LifeBaseV2.Genus.Plantae:
                 // TODO
@@ -187,6 +185,10 @@ public class PlayerController : MonoBehaviour
                 // TODO
                 Debug.Log("Cannot create fungus pair: not implemented yet.");
                 break;
+            case LifeBaseV2.Genus.Na:
+                break;
+            default:
+                throw new ArgumentOutOfRangeException(nameof(genus), genus, null);
         }
     }
 
