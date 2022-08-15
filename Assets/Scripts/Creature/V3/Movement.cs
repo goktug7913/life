@@ -1,12 +1,12 @@
 ﻿using UnityEngine;
 
-namespace Creature
+namespace Creature.V3
 {
-    public class MovementComponent : MonoBehaviour
+    public class Movement : MonoBehaviour
     {
         private Attributes _attributes;
-        
-        public struct Attributes
+
+        struct Attributes
         {
             private float _speed;
             private float _maxSpeed;

@@ -7,6 +7,8 @@ namespace Creature.V3
     public class LifeBaseV3 : MonoBehaviour
     {
         public Genetics genetics;
+        Movement _movement;
+        Genitalia _genitalia;
         
         MeshFilter _meshFilter;
         MeshRenderer _renderer;
@@ -18,6 +20,8 @@ namespace Creature.V3
         void Awake()
         {
             genetics = gameObject.AddComponent<Genetics>();
+            _movement = gameObject.AddComponent<Movement>();
+            _genitalia = gameObject.AddComponent<Genitalia>();
             
             _meshFilter = gameObject.AddComponent<MeshFilter>();
             _renderer = gameObject.AddComponent<MeshRenderer>();

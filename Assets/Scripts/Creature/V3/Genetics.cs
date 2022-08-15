@@ -44,7 +44,7 @@ namespace Creature.V3
             };
         }
         
-        Sex GetSex()
+        public Sex GetSex()
         {
             return _sex;
         }

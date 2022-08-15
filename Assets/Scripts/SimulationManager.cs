@@ -1,7 +1,5 @@
-using System.Collections;
 using Creature.V3;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 public class SimulationManager : MonoBehaviour
 {

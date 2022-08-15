@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Creature.V2;
 using UnityEngine;
 using UnityEngine.Serialization;
 
