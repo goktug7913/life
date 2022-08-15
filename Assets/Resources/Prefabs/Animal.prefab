@@ -16,7 +16,7 @@ GameObject:
   - component: {fileID: 5221147565205916434}
   m_Layer: 0
   m_Name: body
-  m_TagString: Untagged
+  m_TagString: Life
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -161,7 +161,7 @@ MonoBehaviour:
   maxSpeed: 0
   turnRate: 2
   visionRange: 5
-  use_rb_movement: 0
+  useRbMovement: 0
   wanderTarget: {x: 0, y: 0, z: 0}
   mateTarget: {fileID: 0}
   isMating: 0

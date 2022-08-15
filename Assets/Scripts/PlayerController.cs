@@ -22,12 +22,17 @@ public class PlayerController : MonoBehaviour
 
     List<LifeBaseV2> selectedLife;
 
+    SimulationManager _simulationManager;
+    
     // Start is called before the first frame update
     private void Start()
     {
         selectedLife = new List<LifeBaseV2>(); // initialize the list.
         // Funny note: I forgot to initialize this list, and it was causing a null reference exception.
         // It took me a few hours to find out. I was almost deleting the whole selection script.
+
+        // Find the manager in the level
+        _simulationManager = FindObjectOfType<SimulationManager>();
     }
 
     // Update is called once per frame
@@ -37,7 +42,8 @@ public class PlayerController : MonoBehaviour
         // Spawn a pair of animals on right click.
         if (Input.GetMouseButtonDown(1))
         {
-            SpawnNewSpeciesPair(LifeBaseV2.Genus.Animalia);
+            //SpawnNewSpeciesPair(LifeBaseV2.Genus.Animalia);
+            SpawnLifeV3();
         }
     }
 
@@ -160,7 +166,19 @@ public class PlayerController : MonoBehaviour
         // move camera
         _Camera.transform.Translate(0, 0, zoom);
     }
-
+    
+    void SpawnLifeV3()
+    {
+        // Get the mouse position in world space.
+        Vector3 mousePos = Input.mousePosition;
+        mousePos.z = 10;
+        Vector3 worldPos = _Camera.ScreenToWorldPoint(mousePos);
+        // Move the Y position to the ground.
+        worldPos.y = 3;
+        
+        _simulationManager.SpawnLife(worldPos);
+    }
+    
     void SpawnNewSpeciesPair(LifeBaseV2.Genus genus){
         /* This function spawns a new species pair of given genus
         around the mouse cursor.*/
