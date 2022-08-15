@@ -177,7 +177,8 @@ public class PlayerController : MonoBehaviour
         // Move the Y position to the ground.
         worldPos.y = 3;
         
-        _simulationManager.SpawnLife(worldPos);
+        //_simulationManager.SpawnLife(worldPos);
+        EventManager.current.RequestLifeSpawn(worldPos);
     }
     
     void SpawnNewSpeciesPair(LifeBaseV2.Genus genus){

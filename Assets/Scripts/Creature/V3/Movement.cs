@@ -1,18 +1,57 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 namespace Creature.V3
 {
     public class Movement : MonoBehaviour
     {
-        private Attributes _attributes;
+
+        GameObject _root;
+        Attributes _attributes;
 
         struct Attributes
         {
-            private float _speed;
-            private float _maxSpeed;
-            private float _turnRate;
-            private float _acceleration;
-            private float _deceleration;
+            internal float speed;
+            internal float maxSpeed;
+            internal float turnRate;
+            internal float acceleration;
+            internal float deceleration;
         }
+
+        void Awake()
+        {
+            InitDebug(); // We use this for testing movement
+            
+            // Set the root object
+            _root = transform.root.gameObject;
+        }
+
+        void InitDebug()
+        {
+            _attributes = new Attributes
+            {
+                speed = 1,
+                maxSpeed = 1,
+                turnRate = 1,
+                acceleration = 1,
+                deceleration = 1,
+            };
+        }
+        
+        public void MoveTo(Vector3 target)
+        {
+            Vector3 position = transform.position;
+            Vector3 moveDirection = target - position;
+            Quaternion lookRotation = Quaternion.LookRotation(moveDirection);
+
+            // Do not rotate vertically.
+            lookRotation.x = 0;
+
+            // Move the animal in the direction of the wander target.
+            position += moveDirection.normalized * (_attributes.speed * Time.deltaTime);
+            _root.transform.position = position;
+            _root.transform.rotation = Quaternion.Slerp(_root.transform.rotation, lookRotation, Time.deltaTime * (_attributes.turnRate));
+        }
+        
     }
 }

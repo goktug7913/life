@@ -1,7 +1,7 @@
 using System;
-using Creature.V2;
 using TMPro;
 using UnityEngine;
+using Creature.V2;
 
 public class InfoCard : MonoBehaviour
 {

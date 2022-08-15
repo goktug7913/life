@@ -60,7 +60,7 @@ namespace Creature.V2
             {
                 Sex.Male => Color.blue,
                 Sex.Female => Color.magenta,
-                _ => GetComponent<MeshRenderer>().material.color
+                _ => GetComponent<MeshRenderer>().material.color,
             };
         }
         // - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -181,19 +181,22 @@ namespace Creature.V2
                 state = State.GoToMate;
                 return;
             }
-            // if not hungry and has no mate, find mate
-            else if (hunger < maxHunger/4
-                && mateTarget == null
-                && !hasMatedRecently)
-            {
-                state = State.FindMate;
-                return;
-            }
-            // if not hungry and not mating, wander
             else
             {
-                state = State.Wander;
-                return;
+                // if not hungry and has no mate, find mate
+                if (hunger < maxHunger / 4
+                    && mateTarget == null
+                    && !hasMatedRecently)
+                {
+                    state = State.FindMate;
+                    return;
+                }
+                // if not hungry and not mating, wander
+                else
+                {
+                    state = State.Wander;
+                    return;
+                }
             }
         }
 
