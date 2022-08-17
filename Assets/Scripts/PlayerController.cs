@@ -1,53 +1,51 @@
 using System.Collections.Generic;
-using Creature.V2;
+using Creature.V3;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 public class PlayerController : MonoBehaviour
 {
-    [FormerlySerializedAs("PlayerRoot")] public GameObject playerRoot;
-    [FormerlySerializedAs("CameraRoot")] public GameObject cameraRoot;
+    public GameObject playerRoot;
+    public GameObject cameraRoot;
     public Camera _Camera;
 
     public float moveSpeed = 3f;
+    
     public float zoomSpeed = 10f;
+    
     public float orbitSpeed = 1f;
     float _orbitMultiplier = 1000f;
     float _moveMultiplier = 10f;
+    
     public bool invertY = true;
 
     public bool canMove = true;
     public bool canZoom = true;
     public bool canOrbit = true;
 
-    List<LifeBaseV2> _selectedLife;
-
-    SimulationManager _simulationManager;
+    List<LifeBaseV3> _selectedLife;
     
     // Start is called before the first frame update
-    private void Start()
+    void Start()
     {
-        _selectedLife = new List<LifeBaseV2>(); // initialize the list.
+        _selectedLife = new List<LifeBaseV3>(); // initialize the list.
         // Funny note: I forgot to initialize this list, and it was causing a null reference exception.
         // It took me a few hours to find out. I was almost deleting the whole selection script.
 
         // Find the manager in the level
-        _simulationManager = FindObjectOfType<SimulationManager>();
     }
 
     // Update is called once per frame
-    private void Update()
+    void Update()
     {
         SelectLife();
         // Spawn a pair of animals on right click.
         if (Input.GetMouseButtonDown(1))
         {
-            //SpawnNewSpeciesPair(LifeBaseV2.Genus.Animalia);
             SpawnLifeV3();
         }
     }
 
-    private void FixedUpdate()
+    void FixedUpdate()
     {
         // I moved this to FixedUpdate because it is supposed to be more stable for the camera and movement.
         CameraMove();
@@ -55,41 +53,11 @@ public class PlayerController : MonoBehaviour
         ScrollZoom();
     }
 
-    private void SelectLife()
+    void SelectLife()
     {
-        // Basic selection system.
-        
-        if (!Input.GetMouseButtonDown(0)) return;
-        
-        Ray ray = _Camera.ScreenPointToRay(Input.mousePosition);
-        RaycastHit hit;
-
-        if (!Physics.Raycast(ray, out hit)) return;
-        
-        Debug.Log("Hit " + hit.transform.name);
-        
-        var lifebase = hit.transform.GetComponent<LifeBaseV2>();
-        if (lifebase)
-        {
-            if (Input.GetKeyDown(KeyCode.LeftControl))
-            {
-                // Todo        
-            }
-            else
-            {
-                _selectedLife.Clear();
-                _selectedLife.Add(lifebase);
-            }
-        }
-
-        // Iterate through the selected life and show the info card.
-        foreach (LifeBaseV2 life in _selectedLife)
-        {
-            life.infoCard.SetVisibility(true);
-        }
     }
 
-    private void CameraMove()
+    void CameraMove()
     {
         if (!canMove){return;} // If can't move, return.
         
@@ -109,7 +77,7 @@ public class PlayerController : MonoBehaviour
         playerRoot.transform.Translate(movement);
     }
 
-    private void CameraOrbit()
+    void CameraOrbit()
     {
         if (!canOrbit) return; // If can't orbit, return.
 
@@ -134,7 +102,7 @@ public class PlayerController : MonoBehaviour
         cameraRoot.transform.rotation = rotation;
     }
 
-    private void ScrollZoom()
+    void ScrollZoom()
     {
         if (!canZoom){return;} // If can't zoom, return.
 

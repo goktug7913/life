@@ -63,6 +63,8 @@ namespace Creature.V3.Components
         
         // This mapping needs to be uniform between creatures
         // Or else, same DNA could generate different attribute values.
+        
+        
     }
 
     public enum Genus{

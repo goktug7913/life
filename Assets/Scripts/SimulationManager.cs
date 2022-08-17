@@ -1,10 +1,13 @@
+using System.Collections.Generic;
 using UnityEngine;
 using Creature.V3;
 using Random = UnityEngine.Random;
 
 public class SimulationManager : MonoBehaviour
 {
-    GameObject[] _trackedCreatures;
+    public static SimulationManager current; // Singleton
+    
+    public List<GameObject> _trackedCreatures;
     
     // These need to be set from the Editor.
     [SerializeField] Mesh defaultMesh;
@@ -15,7 +18,9 @@ public class SimulationManager : MonoBehaviour
     void Start()
     {
         EventManager.current.OnSpawnOffspring += SpawnLife;
-        EventManager.current.OnSpawnGenesis += SpawnLife;
+        EventManager.current.OnSpawnGenesis += SpawnLifeGenesis;
+        
+        _trackedCreatures = new List<GameObject>();
     }
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     // Update is called once per frame
@@ -27,8 +32,8 @@ public class SimulationManager : MonoBehaviour
     void OnDestroy()
     {
         //Unsubscribe from all events
-        
-        
+        EventManager.current.OnSpawnOffspring -= SpawnLife;
+        EventManager.current.OnSpawnGenesis -= SpawnLifeGenesis;
     }
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
     // Custom methods and definitions go here.
@@ -47,13 +52,15 @@ public class SimulationManager : MonoBehaviour
         
         _base.genetics.SetDna(dna);
         
+        _trackedCreatures.Add(life);
         return life;
     }
 
-    void SpawnLife(Vector3 position)
+    void SpawnLifeGenesis(Vector3 position)
     {
-        GameObject life = ConstructLife(GenerateDnaRandom(0,1,20));
+        GameObject life = ConstructLife(GenerateDnaRandom(0,1,30));
         life.transform.position = position;
+        life.transform.rotation = Quaternion.Euler(0, Random.Range(0, 360), 0);
         Debug.Log("Spawned LifeV3 with genesis DNA");
     }
 
@@ -61,13 +68,14 @@ public class SimulationManager : MonoBehaviour
     {
         GameObject life = ConstructLife(dna);
         life.transform.position = position;
+        life.transform.rotation = Quaternion.Euler(0, Random.Range(0, 360), 0);
         Debug.Log("Spawned LifeV3 with the provided DNA");
     }
 
     static float[] GenerateDnaRandom(float min,float max, int length){
         float[] dna = new float[length];
 
-        for (int i = 0; i < 20; i++){
+        for (int i = 0; i < length; i++){
             dna[i] = Random.Range(min, max); // terrible..
         }
         return dna;

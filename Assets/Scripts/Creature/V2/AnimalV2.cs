@@ -50,9 +50,7 @@ namespace Creature.V2
 
             _rb = GetComponent<Rigidbody>();
             genus = Genus.Animalia;
-
-            infoCard = GetComponentInChildren<InfoCard>();
-            infoCard.Attach(this);
+            
             GenerateAttributes();
 
             // if male set color blue

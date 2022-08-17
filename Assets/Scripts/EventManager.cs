@@ -15,12 +15,13 @@ using UnityEngine;
         // - - - - - - - - - - - - - - - - - - - - - - - - - - - -
         public void RequestLifeSpawn(Vector3 pos, float[] dna)
         {
-            //OnSpawnOffspring?.Invoke(pos, dna);
+            OnSpawnOffspring?.Invoke(pos, dna);
             Debug.Log("OnSpawnOffspring() event");
         }
         // - - - - - - - - - - - - - - - - - - - - - - - - - - - -
         public void RequestLifeSpawn(Vector3 pos)
         {
             OnSpawnGenesis?.Invoke(pos);
+            Debug.Log("OnSpawnGenesis() event");
         }
     }

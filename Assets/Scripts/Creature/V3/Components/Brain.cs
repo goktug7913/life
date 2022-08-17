@@ -11,9 +11,9 @@ namespace Creature.V3.Components
         [SerializeField] Queue<State> _previousStates;
         [SerializeField] public int stateHistoryLength = 30;
         
-        Movement _movementRef;
-        Sensors _sensorsRef;
-        
+        [SerializeField] Movement _movementRef;
+        [SerializeField] Sensors _sensorsRef;
+
         void Awake()
         {
             _previousStates = new Queue<State>(stateHistoryLength);

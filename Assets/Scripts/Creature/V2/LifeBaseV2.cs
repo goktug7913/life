@@ -14,7 +14,6 @@ namespace Creature.V2
         public float age; // Age of the creature in seconds
         public int generation; // Generation of the creature (in the context of bloodline)
         public bool isGenesis;
-        public InfoCard infoCard;
 
         // DNA will be an array of floats, each representing a gene
         // The length of the array will be the number of genes in the organism.

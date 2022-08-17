@@ -26,6 +26,11 @@ namespace Creature.V3
         void Awake()
         {
             InitializeComponents();
+            
+            // Set layer to "Life" and tag to "Life"
+            gameObject.layer = LayerMask.NameToLayer("Life");
+            gameObject.tag = "Life";
+            
             Debug.Log("Created LifeBaseV3 and components");
         }
         // - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -66,9 +71,5 @@ namespace Creature.V3
             _rigidbody = gameObject.AddComponent<Rigidbody>();
         }
         // - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-        void Test()
-        {
-            _movement.MoveTo(new Vector3(Random.Range(5,5),Random.Range(5,5),Random.Range(5,5)));
-        }
     }
 }
