@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using Creature.V2;
 using UnityEngine;
@@ -21,14 +20,14 @@ public class PlayerController : MonoBehaviour
     public bool canZoom = true;
     public bool canOrbit = true;
 
-    List<LifeBaseV2> selectedLife;
+    List<LifeBaseV2> _selectedLife;
 
     SimulationManager _simulationManager;
     
     // Start is called before the first frame update
     private void Start()
     {
-        selectedLife = new List<LifeBaseV2>(); // initialize the list.
+        _selectedLife = new List<LifeBaseV2>(); // initialize the list.
         // Funny note: I forgot to initialize this list, and it was causing a null reference exception.
         // It took me a few hours to find out. I was almost deleting the whole selection script.
 
@@ -56,31 +55,11 @@ public class PlayerController : MonoBehaviour
         ScrollZoom();
     }
 
-    private void OnDrawGizmos()
-    {
-        Gizmos.color = Color.red;
-        Gizmos.DrawSphere(transform.position, 0.1f);
-
-        if (selectedLife != null)
-        {
-            foreach (LifeBaseV2 life in selectedLife)
-            {
-                Gizmos.color = Color.green;
-                Gizmos.DrawSphere(life.transform.position, 0.1f);
-            }
-        }
-
-        Ray ray = _Camera.ScreenPointToRay(Input.mousePosition);
-        Gizmos.color = Color.blue;
-        Gizmos.DrawRay(ray.origin, ray.direction * 100);
-    }
-
     private void SelectLife()
     {
         // Basic selection system.
         if (!Input.GetMouseButtonDown(0)) return;
         
-        Debug.Log("Clicked");
         Ray ray = _Camera.ScreenPointToRay(Input.mousePosition);
         RaycastHit hit;
 
@@ -96,13 +75,13 @@ public class PlayerController : MonoBehaviour
             }
             else
             {
-                selectedLife.Clear();
-                selectedLife.Add(lifebase);
+                _selectedLife.Clear();
+                _selectedLife.Add(lifebase);
             }
         }
 
         // Iterate through the selected life and show the info card.
-        foreach (var life in selectedLife)
+        foreach (var life in _selectedLife)
         {
             life.infoCard.SetVisibility(true);
         }
@@ -118,7 +97,7 @@ public class PlayerController : MonoBehaviour
 
         if (moveHorizontal == 0 && moveVertical == 0){return;} // If no input, return.
 
-        Vector3 movement = new Vector3(moveHorizontal, 0.0f, moveVertical);
+        var movement = new Vector3(moveHorizontal, 0.0f, moveVertical);
 
         // rotate movement with camera.
         movement = Quaternion.Euler(0, cameraRoot.transform.rotation.eulerAngles.y, 0) * movement;
@@ -177,41 +156,8 @@ public class PlayerController : MonoBehaviour
         // Move the Y position to the ground.
         worldPos.y = 3;
         
-        //_simulationManager.SpawnLife(worldPos);
         EventManager.current.RequestLifeSpawn(worldPos);
     }
-    
-    void SpawnNewSpeciesPair(LifeBaseV2.Genus genus){
-        /* This function spawns a new species pair of given genus
-        around the mouse cursor.*/
-
-        // Get the mouse position in world space.
-        Vector3 mousePos = Input.mousePosition;
-        mousePos.z = 10;
-        Vector3 worldPos = _Camera.ScreenToWorldPoint(mousePos);
-        // Move the Y position to the ground.
-        worldPos.y = 3;
-
-        // Spawn the new species pair.
-        switch (genus){
-            case LifeBaseV2.Genus.Animalia:
-                Instantiate(Resources.Load("Prefabs/Animal"), worldPos, Quaternion.identity);
-                break;
-            case LifeBaseV2.Genus.Plantae:
-                // TODO
-                Debug.Log("Cannot create plant pair: not implemented yet.");
-                break;
-            case LifeBaseV2.Genus.Fungi:
-                // TODO
-                Debug.Log("Cannot create fungus pair: not implemented yet.");
-                break;
-            case LifeBaseV2.Genus.Na:
-                break;
-            default:
-                throw new ArgumentOutOfRangeException(nameof(genus), genus, null);
-        }
-    }
-
 }
 
 

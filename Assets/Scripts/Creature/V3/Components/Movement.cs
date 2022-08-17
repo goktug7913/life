@@ -1,7 +1,6 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 
-namespace Creature.V3
+namespace Creature.V3.Components
 {
     public class Movement : MonoBehaviour
     {

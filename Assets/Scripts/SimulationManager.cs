@@ -1,4 +1,3 @@
-using System;
 using UnityEngine;
 using Creature.V3;
 using Random = UnityEngine.Random;
@@ -15,8 +14,8 @@ public class SimulationManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        EventManager.current.onSpawnOffspring += SpawnLife;
-        EventManager.current.onSpawnGenesis += SpawnLife;
+        EventManager.current.OnSpawnOffspring += SpawnLife;
+        EventManager.current.OnSpawnGenesis += SpawnLife;
     }
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     // Update is called once per frame

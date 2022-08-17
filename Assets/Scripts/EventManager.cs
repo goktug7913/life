@@ -11,16 +11,17 @@ using UnityEngine;
             Debug.Log("EventManager Awake.");
         }
 
-        public event Action<Vector3, float[]> onSpawnOffspring;
-        public event Action<Vector3> onSpawnGenesis;
+        public event Action<Vector3, float[]> OnSpawnOffspring;
+        public event Action<Vector3> OnSpawnGenesis;
         
         public void RequestLifeSpawn(Vector3 pos, float[] dna)
         {
-            onSpawnOffspring?.Invoke(pos, dna);
+            //OnSpawnOffspring?.Invoke(pos, dna);
+            Debug.Log("OnSpawnOffspring() event");
         }
         
         public void RequestLifeSpawn(Vector3 pos)
         {
-            onSpawnGenesis?.Invoke(pos);
+            OnSpawnGenesis?.Invoke(pos);
         }
     }

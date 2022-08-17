@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-namespace Creature.V3
+namespace Creature.V3.Components
 {
     public class Genitalia : MonoBehaviour
     {

@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Creature.V3
+namespace Creature.V3.Components
 {
     public class Genetics : MonoBehaviour
     {
@@ -40,7 +40,7 @@ namespace Creature.V3
             {
                 < .5f => Sex.Male,
                 > .5f => Sex.Female,
-                _ => Sex.Na,
+                _     => Sex.Na,
             };
         }
         
@@ -49,7 +49,17 @@ namespace Creature.V3
             return _sex;
         }
     }
-    
+
+    public class DnaMapper : MonoBehaviour
+    {
+        // We will use this to provide gene values
+        // to other life components, so that they can
+        // initialize their attributes.
+        
+        // This mapping needs to be uniform between creatures
+        // Or else, same DNA could generate different attribute values.
+    }
+
     public enum Genus{
         Animalia,
         Plantae,
