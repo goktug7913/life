@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using Creature.V3;
+using DefaultNamespace;
 using UnityEngine;
 
 public class PlayerController : MonoBehaviour
@@ -79,25 +80,21 @@ public class PlayerController : MonoBehaviour
 
     void CameraOrbit()
     {
-        if (!canOrbit) return; // If can't orbit, return.
+        if (!canOrbit && !Input.GetMouseButton(2)) return; // If can't orbit, return.
 
-        if (!Input.GetMouseButton(2)) return;
         // get cursor position
-        float mouseX = Input.GetAxis("Mouse X");
-        float mouseY = Input.GetAxis("Mouse Y");
+        float mouseX = InputManager.Instance.mouseScreenPos.x; // Refactor this TODO
+        float mouseY = InputManager.Instance.mouseScreenPos.y; // Refactor this TODO
 
         // apply inversion if enabled
-        if (invertY)
-        {
-            mouseY *= -1;
-        }
+        if (invertY) mouseY *= -1;
 
         // mouseX is the horizontal distance, mouseY is the vertical distance.
         Vector3 mouseMovement = new Vector3(mouseY, 0f, mouseX) * (Time.deltaTime * orbitSpeed * _orbitMultiplier);
         cameraRoot.transform.Rotate(mouseY,mouseX,0);
 
         // we need to zero out Z axis... (fix later)
-        var rotation = cameraRoot.transform.rotation;
+        Quaternion rotation = cameraRoot.transform.rotation;
         rotation = Quaternion.Euler(rotation.eulerAngles.x, rotation.eulerAngles.y, 0);
         cameraRoot.transform.rotation = rotation;
     }
@@ -106,12 +103,10 @@ public class PlayerController : MonoBehaviour
     {
         if (!canZoom){return;} // If can't zoom, return.
 
-        float scroll = Input.GetAxis("Mouse ScrollWheel");
-
-        if (scroll == 0){return;} // if no scroll, return.
+        if (InputManager.Instance.scrollWheel == 0){return;} // if no scroll, return.
 
         // change camera distance based on scroll.
-        float zoom = scroll * zoomSpeed;
+        float zoom = InputManager.Instance.scrollWheel * zoomSpeed;
 
         // move camera
         _Camera.transform.Translate(0, 0, zoom);
@@ -119,10 +114,7 @@ public class PlayerController : MonoBehaviour
     
     void SpawnLifeV3()
     {
-        // Get the mouse position in world space.
-        Vector3 mousePos = Input.mousePosition;
-        mousePos.z = 10;
-        Vector3 worldPos = _Camera.ScreenToWorldPoint(mousePos);
+        Vector3 worldPos = _Camera.ScreenToWorldPoint(InputManager.Instance.mouseScreenPos);
         // Move the Y position to the ground.
         worldPos.y = 3;
         

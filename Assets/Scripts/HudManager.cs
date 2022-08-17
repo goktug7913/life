@@ -30,12 +30,14 @@ public class HudManager : MonoBehaviour
     void OnGUI()
     {
         // Draw the object name on every LifeBaseV3 object.
-        foreach (GameObject lifeBase in SimulationManager.current._trackedCreatures)
+        foreach (LifeBaseV3 lifeBase in FindObjectsOfType<LifeBaseV3>()) // Refactor TODO
         {
             Vector3 screenPosition = Camera.main.WorldToScreenPoint(lifeBase.transform.position);
             screenPosition.y = Screen.height - screenPosition.y;
             GUI.Label(new Rect(screenPosition.x, screenPosition.y, 200, 200), lifeBase.name);
             
         }
+        
+        GUI.Box(new Rect(10,10,200,100), "test");
     }
 }

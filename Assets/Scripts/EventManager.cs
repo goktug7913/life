@@ -6,6 +6,10 @@ using UnityEngine;
         public static EventManager current; // Singleton
         public event Action<Vector3, float[]> OnSpawnOffspring;
         public event Action<Vector3> OnSpawnGenesis;
+
+        public event Action<KeyCode> OnKeyPressed;
+        public event Action<KeyCode> OnKeyReleased;
+        public event Action<KeyCode> OnKeyHeld;
         // - - - - - - - - - - - - - - - - - - - - - - - - - - - -
         void Awake()
         {
@@ -23,5 +27,23 @@ using UnityEngine;
         {
             OnSpawnGenesis?.Invoke(pos);
             Debug.Log("OnSpawnGenesis() event");
+        }
+        // - - - -
+        public void KeyPressed(KeyCode key)
+        {
+            OnKeyPressed?.Invoke(key);
+            Debug.Log("OnKeyPressed() event");
+        }
+
+        public void KeyReleased(KeyCode key)
+        {
+            OnKeyReleased?.Invoke(key);
+            Debug.Log("OnKeyReleased() event");
+        }
+
+        public void KeyHeld(KeyCode key)
+        {
+            OnKeyHeld?.Invoke(key);
+            Debug.Log("OnKeyHeld() event");
         }
     }

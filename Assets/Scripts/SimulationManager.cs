@@ -5,7 +5,7 @@ using Random = UnityEngine.Random;
 
 public class SimulationManager : MonoBehaviour
 {
-    public static SimulationManager current; // Singleton
+    public static SimulationManager Instance; // Singleton
     
     public List<GameObject> _trackedCreatures;
     
