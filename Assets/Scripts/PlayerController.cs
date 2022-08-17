@@ -12,8 +12,8 @@ public class PlayerController : MonoBehaviour
     public float moveSpeed = 3f;
     public float zoomSpeed = 10f;
     public float orbitSpeed = 1f;
-    private float orbitMultiplier = 1000f;
-    private float moveMultiplier = 10f;
+    float _orbitMultiplier = 1000f;
+    float _moveMultiplier = 10f;
     public bool invertY = true;
 
     public bool canMove = true;
@@ -58,6 +58,7 @@ public class PlayerController : MonoBehaviour
     private void SelectLife()
     {
         // Basic selection system.
+        
         if (!Input.GetMouseButtonDown(0)) return;
         
         Ray ray = _Camera.ScreenPointToRay(Input.mousePosition);
@@ -66,6 +67,7 @@ public class PlayerController : MonoBehaviour
         if (!Physics.Raycast(ray, out hit)) return;
         
         Debug.Log("Hit " + hit.transform.name);
+        
         var lifebase = hit.transform.GetComponent<LifeBaseV2>();
         if (lifebase)
         {
@@ -81,7 +83,7 @@ public class PlayerController : MonoBehaviour
         }
 
         // Iterate through the selected life and show the info card.
-        foreach (var life in _selectedLife)
+        foreach (LifeBaseV2 life in _selectedLife)
         {
             life.infoCard.SetVisibility(true);
         }
@@ -103,7 +105,7 @@ public class PlayerController : MonoBehaviour
         movement = Quaternion.Euler(0, cameraRoot.transform.rotation.eulerAngles.y, 0) * movement;
 
         // add modifiers and move.
-        movement = movement * (moveSpeed * moveMultiplier * Time.deltaTime);
+        movement = movement * (moveSpeed * _moveMultiplier * Time.deltaTime);
         playerRoot.transform.Translate(movement);
     }
 
@@ -123,7 +125,7 @@ public class PlayerController : MonoBehaviour
         }
 
         // mouseX is the horizontal distance, mouseY is the vertical distance.
-        Vector3 mouseMovement = new Vector3(mouseY, 0f, mouseX) * (Time.deltaTime * orbitSpeed * orbitMultiplier);
+        Vector3 mouseMovement = new Vector3(mouseY, 0f, mouseX) * (Time.deltaTime * orbitSpeed * _orbitMultiplier);
         cameraRoot.transform.Rotate(mouseY,mouseX,0);
 
         // we need to zero out Z axis... (fix later)

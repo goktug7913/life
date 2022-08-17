@@ -17,7 +17,7 @@ namespace Creature.V3.Components
         void Awake()
         {
             _previousStates = new Queue<State>(stateHistoryLength);
-            
+            SetReferences();
         }
 
         void Update()
@@ -31,13 +31,14 @@ namespace Creature.V3.Components
             _sensorsRef = GetComponentInParent<Sensors>();
         }
         
-        void StateTransition(State oldState, State newState)
+        void StateTransition(State newState)
         {
             // Every state transition should happen through this function.
+            State oldState = _state;
             if (oldState == newState) return;
             
-            _state = newState;
             AddStateHistory(oldState);
+            _state = newState;
         }
 
         void AddStateHistory(State state)
@@ -57,6 +58,7 @@ namespace Creature.V3.Components
     }
     
     public enum State {
+        Idle,
         Wander,
         
         GoToMate,

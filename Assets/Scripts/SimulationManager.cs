@@ -28,6 +28,7 @@ public class SimulationManager : MonoBehaviour
     {
         //Unsubscribe from all events
         
+        
     }
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
     // Custom methods and definitions go here.
@@ -48,15 +49,15 @@ public class SimulationManager : MonoBehaviour
         
         return life;
     }
-    
-    public void SpawnLife(Vector3 position)
+
+    void SpawnLife(Vector3 position)
     {
         GameObject life = ConstructLife(GenerateDnaRandom(0,1,20));
         life.transform.position = position;
         Debug.Log("Spawned LifeV3 with genesis DNA");
     }
-    
-    public void SpawnLife(Vector3 position, float[] dna)
+
+    void SpawnLife(Vector3 position, float[] dna)
     {
         GameObject life = ConstructLife(dna);
         life.transform.position = position;

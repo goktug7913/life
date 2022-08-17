@@ -22,10 +22,21 @@ namespace Creature.V3
         public Material material;
 
         public bool isGenesis = true;
-        
+        // - - - - - - - - - - - - - - - - - - - - - - - - - - - -
         void Awake()
         {
             InitializeComponents();
+            Debug.Log("Created LifeBaseV3 and components");
+        }
+        // - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+        void Start()
+        {
+            // These don't execute in Awake()
+            _meshFilter.mesh = mesh;
+            _renderer.material = material;
+            
+            _collider.sharedMesh = mesh;
+            _collider.convex = true;
             
             // Let's color code the sex
             _renderer.material.color = genetics.GetSex() switch
@@ -36,23 +47,11 @@ namespace Creature.V3
                 _          => throw new ArgumentOutOfRangeException(),
             };
             
-            Debug.Log("Created LifeBaseV3 and components");
-        }
-
-        void Start()
-        {
-            // These don't execute in Awake()
-            _meshFilter.mesh = mesh;
-            _renderer.material = material;
-            
-            _collider.sharedMesh = mesh;
-            _collider.convex = true;
-            
             // We should lock pitch rotation
             _rigidbody.constraints = RigidbodyConstraints.FreezeRotationY;
             Debug.Log("Started LifeBaseV3");
         }
-
+        // - - - - - - - - - - - - - - - - - - - - - - - - - - - -
         void InitializeComponents()
         {
             genetics = gameObject.AddComponent<Genetics>();
@@ -66,7 +65,7 @@ namespace Creature.V3
             _collider = gameObject.AddComponent<MeshCollider>();
             _rigidbody = gameObject.AddComponent<Rigidbody>();
         }
-        
+        // - - - - - - - - - - - - - - - - - - - - - - - - - - - -
         void Test()
         {
             _movement.MoveTo(new Vector3(Random.Range(5,5),Random.Range(5,5),Random.Range(5,5)));

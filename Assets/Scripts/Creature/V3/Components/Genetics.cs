@@ -18,6 +18,11 @@ namespace Creature.V3.Components
             return _dna.Length;
         }
 
+        public float[] GetDna()
+        {
+            return _dna;
+        }
+        
         public void SetDna(float[] dna)
         {
             if (_fuse) Debug.LogError(this + " tried to overwrite DNA");

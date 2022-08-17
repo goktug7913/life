@@ -23,15 +23,15 @@ namespace Creature.V2
         // The genes will be used to determine the behaviour and attributes of the organism.
 
         /*
-    @goktug7913
-    We should implement some sort of management system to handle
-    which genes affect which attributes, because right now the genes
-    are hardcoded for attributes, some reside in this class, and some
-    reside in the child class.
+        @goktug7913
+        We should implement some sort of management system to handle
+        which genes affect which attributes, because right now the genes
+        are hardcoded for attributes, some reside in this class, and some
+        reside in the child class.
 
-    This will be a problem for the future, because we will need to
-    be able to add new genes to the organism.
-    */
+        This will be a problem for the future, because we will need to
+        be able to add new genes to the organism.
+        */
 
         public float[] dna;
         public int dnaLength = 20;
