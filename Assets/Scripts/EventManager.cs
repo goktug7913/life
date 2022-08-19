@@ -10,6 +10,7 @@ using UnityEngine;
         public event Action<KeyCode> OnKeyPressed;
         public event Action<KeyCode> OnKeyReleased;
         public event Action<KeyCode> OnKeyHeld;
+        public event Action<InputManager.MouseButton> OnMouseButtonPressed;
         // - - - - - - - - - - - - - - - - - - - - - - - - - - - -
         void Awake()
         {
@@ -28,22 +29,33 @@ using UnityEngine;
             OnSpawnGenesis?.Invoke(pos);
             Debug.Log("OnSpawnGenesis() event");
         }
-        // - - - -
+        // - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+        // - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+        // - - - - - - - - - - - - - - - - - - - - - - - - - - - -
         public void KeyPressed(KeyCode key)
         {
             OnKeyPressed?.Invoke(key);
             Debug.Log("OnKeyPressed() event");
         }
-
+        // - - - - - - - - - - - - - - - - - - - - - - - - - - - -
         public void KeyReleased(KeyCode key)
         {
             OnKeyReleased?.Invoke(key);
             Debug.Log("OnKeyReleased() event");
         }
-
+        // - - - - - - - - - - - - - - - - - - - - - - - - - - - -
         public void KeyHeld(KeyCode key)
         {
             OnKeyHeld?.Invoke(key);
             Debug.Log("OnKeyHeld() event");
         }
+        // - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+        public void MouseButtonPressed(InputManager.MouseButton button)
+        {
+            OnMouseButtonPressed?.Invoke(button);
+            Debug.Log("OnMouseButtonPressed() event");
+        }
+        // - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+        // - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+        // - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     }

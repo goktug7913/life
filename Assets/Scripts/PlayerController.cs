@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using Creature.V3;
-using DefaultNamespace;
 using UnityEngine;
 
 public class PlayerController : MonoBehaviour
@@ -80,7 +79,7 @@ public class PlayerController : MonoBehaviour
 
     void CameraOrbit()
     {
-        if (!canOrbit && !Input.GetMouseButton(2)) return; // If can't orbit, return.
+        if (!canOrbit || !Input.GetMouseButton(2)) return; // If can't orbit, return.
 
         // get cursor position
         float mouseX = InputManager.Instance.mouseScreenPos.x; // Refactor this TODO

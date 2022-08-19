@@ -500,8 +500,30 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8903a424ce91fa048828614f6762b31b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _trackedCreatures: []
   defaultMesh: {fileID: 0}
   defaultMaterial: {fileID: 0}
+--- !u!1 &1988503811 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1760647528801198946, guid: 92fc3ac5f70c4e048be2963099c479d8,
+    type: 3}
+  m_PrefabInstance: {fileID: 1760647527213197918}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1988503816
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1988503811}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bbce9fa7d3634072bcfe21717245c138, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  axes: {x: 0, y: 0}
+  mouseScreenPos: {x: 0, y: 0}
+  scrollWheel: 0
 --- !u!1 &2013410473
 GameObject:
   m_ObjectHideFlags: 1
