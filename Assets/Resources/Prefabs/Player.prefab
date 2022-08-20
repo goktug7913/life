@@ -98,7 +98,7 @@ MonoBehaviour:
   zoomSpeed: 3
   orbitSpeed: 1
   invertY: 1
-  canMove: 1
+  canMove: 0
   canZoom: 1
   canOrbit: 1
 --- !u!1 &4589952762419944657

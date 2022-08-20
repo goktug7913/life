@@ -70,6 +70,7 @@ public class InputManager : MonoBehaviour
     {
         // Find out if any key is pressed.
         if (!Input.anyKeyDown) return;
+        
         // If any key is pressed, find out which key it is.
         foreach (KeyCode key in Enum.GetValues(typeof(KeyCode)))
         {
@@ -77,6 +78,26 @@ public class InputManager : MonoBehaviour
             {
                 // If the key is pressed, fire an event.
                 EventManager.current.KeyPressed(key);
+            }
+        }
+        
+        // If any key is released, find out which key it is.
+        foreach (KeyCode key in Enum.GetValues(typeof(KeyCode)))
+        {
+            if (Input.GetKeyUp(key))
+            {
+                // If the key is released, fire an event.
+                EventManager.current.KeyReleased(key);
+            }
+        }
+        
+        // If any key is held, find out which key it is.
+        foreach (KeyCode key in Enum.GetValues(typeof(KeyCode)))
+        {
+            if (Input.GetKey(key))
+            {
+                // If the key is held, fire an event.
+                EventManager.current.KeyHeld(key);
             }
         }
     }

@@ -35,19 +35,19 @@ using UnityEngine;
         public void KeyPressed(KeyCode key)
         {
             OnKeyPressed?.Invoke(key);
-            Debug.Log("OnKeyPressed() event");
+            Debug.Log("OnKeyPressed(): " + key);
         }
         // - - - - - - - - - - - - - - - - - - - - - - - - - - - -
         public void KeyReleased(KeyCode key)
         {
             OnKeyReleased?.Invoke(key);
-            Debug.Log("OnKeyReleased() event");
+            Debug.Log("OnKeyReleased(): " + key);
         }
         // - - - - - - - - - - - - - - - - - - - - - - - - - - - -
         public void KeyHeld(KeyCode key)
         {
             OnKeyHeld?.Invoke(key);
-            Debug.Log("OnKeyHeld() event");
+            Debug.Log("OnKeyHeld(): " + key);
         }
         // - - - - - - - - - - - - - - - - - - - - - - - - - - - -
         public void MouseButtonPressed(InputManager.MouseButton button)

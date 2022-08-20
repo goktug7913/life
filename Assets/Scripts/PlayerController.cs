@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using Creature.V3;
 using UnityEngine;
@@ -18,20 +19,33 @@ public class PlayerController : MonoBehaviour
     
     public bool invertY = true;
 
-    public bool canMove = true;
+    public bool canMove = false;
     public bool canZoom = true;
     public bool canOrbit = true;
 
     List<LifeBaseV3> _selectedLife;
     
+    // References
+    InputManager _inputManager;
+    SimulationManager _simulationManager;
+    EventManager _eventManager;
+
     // Start is called before the first frame update
     void Start()
     {
-        _selectedLife = new List<LifeBaseV3>(); // initialize the list.
+        _selectedLife = new List<LifeBaseV3>();
         // Funny note: I forgot to initialize this list, and it was causing a null reference exception.
         // It took me a few hours to find out. I was almost deleting the whole selection script.
 
-        // Find the manager in the level
+        // Find managers in the level
+        _inputManager = InputManager.Instance;
+        _simulationManager = SimulationManager.Instance;
+        _eventManager = EventManager.current;
+        
+        // Subscribe to events
+        _eventManager.OnKeyPressed += CameraMove;
+        _eventManager.OnKeyReleased += StopMove;
+
     }
 
     // Update is called once per frame
@@ -48,17 +62,41 @@ public class PlayerController : MonoBehaviour
     void FixedUpdate()
     {
         // I moved this to FixedUpdate because it is supposed to be more stable for the camera and movement.
-        CameraMove();
+        //CameraMove();
         CameraOrbit();
         ScrollZoom();
     }
+    // - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+    // - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+    // - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+    IEnumerator AsyncMove()
+    {
+        Debug.Log("AsyncMove");
+            while (canMove)
+            {
+                Vector3 move = new Vector3(_inputManager.axes.x, _inputManager.axes.y, 0);
 
+                // rotate movement with camera.
+                move = Quaternion.Euler(0, cameraRoot.transform.rotation.eulerAngles.y, 0) * move;
+
+                // add modifiers and move.
+                move *= (moveSpeed * _moveMultiplier * Time.deltaTime);
+                playerRoot.transform.Translate(move);
+            }
+            yield return null;
+    }
+    // - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+    // more async here
+    // - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+    // - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+    // - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     void SelectLife()
     {
     }
 
-    void CameraMove()
+    void CameraMove(KeyCode key)
     {
+        /*
         if (!canMove){return;} // If can't move, return.
         
         // WASD movement
@@ -75,6 +113,21 @@ public class PlayerController : MonoBehaviour
         // add modifiers and move.
         movement = movement * (moveSpeed * _moveMultiplier * Time.deltaTime);
         playerRoot.transform.Translate(movement);
+        */
+
+        if (key is not (KeyCode.W or KeyCode.S or KeyCode.A or KeyCode.D)) return;
+        
+        Debug.Log("CameraMove");
+        StartCoroutine(AsyncMove());
+    }
+    
+    void StopMove(KeyCode key)
+    {
+        if (key is KeyCode.W or KeyCode.S or KeyCode.A or KeyCode.D)
+        {
+            // This will stop the movement coroutine as the loop will evaluate to false.
+            canMove = false;
+        }
     }
 
     void CameraOrbit()
@@ -82,15 +135,14 @@ public class PlayerController : MonoBehaviour
         if (!canOrbit || !Input.GetMouseButton(2)) return; // If can't orbit, return.
 
         // get cursor position
-        float mouseX = InputManager.Instance.mouseScreenPos.x; // Refactor this TODO
-        float mouseY = InputManager.Instance.mouseScreenPos.y; // Refactor this TODO
+        Vector2 mouseXY = InputManager.Instance.mouseScreenPos;
 
         // apply inversion if enabled
-        if (invertY) mouseY *= -1;
+        if (invertY) mouseXY.y *= -1;
 
         // mouseX is the horizontal distance, mouseY is the vertical distance.
-        Vector3 mouseMovement = new Vector3(mouseY, 0f, mouseX) * (Time.deltaTime * orbitSpeed * _orbitMultiplier);
-        cameraRoot.transform.Rotate(mouseY,mouseX,0);
+        Vector3 mouseMovement = new Vector3(mouseXY.y, 0f, mouseXY.x) * (Time.deltaTime * orbitSpeed * _orbitMultiplier);
+        cameraRoot.transform.Rotate(mouseXY.y,mouseXY.x,0);
 
         // we need to zero out Z axis... (fix later)
         Quaternion rotation = cameraRoot.transform.rotation;
