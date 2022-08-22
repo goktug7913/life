@@ -82,6 +82,7 @@ public class PlayerController : MonoBehaviour
                 // add modifiers and move.
                 move *= (moveSpeed * _moveMultiplier * Time.deltaTime);
                 playerRoot.transform.Translate(move);
+                Debug.Log(move);
             }
             yield return null;
     }
@@ -92,6 +93,7 @@ public class PlayerController : MonoBehaviour
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     void SelectLife()
     {
+        // this shouldn't be here, selection system can have it's own class.
     }
 
     void CameraMove(KeyCode key)
