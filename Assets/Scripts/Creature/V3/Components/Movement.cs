@@ -2,7 +2,7 @@
 
 namespace Creature.V3.Components
 {
-    public class Movement : MonoBehaviour
+    public class Movement : ComponentBase
     {
 
         GameObject _root;
@@ -23,6 +23,11 @@ namespace Creature.V3.Components
             
             // Set the root object
             _root = transform.root.gameObject;
+        }
+
+        void Start()
+        {
+            base.Start();
         }
 
         void InitDebug()

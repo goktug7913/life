@@ -35,9 +35,7 @@ public class HudManager : MonoBehaviour
             Vector3 screenPosition = Camera.main.WorldToScreenPoint(lifeBase.transform.position);
             screenPosition.y = Screen.height - screenPosition.y;
             GUI.Label(new Rect(screenPosition.x, screenPosition.y, 200, 200), lifeBase.name);
-            
+
         }
-        
-        GUI.Box(new Rect(10,10,200,100), "test");
     }
 }

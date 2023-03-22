@@ -1,10 +1,9 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
-using Random = UnityEngine.Random;
 
 namespace Creature.V3.Components
 {
-    public class Brain : MonoBehaviour
+    public class Brain : ComponentBase
     {
         [SerializeField] State _state;
 
@@ -18,6 +17,12 @@ namespace Creature.V3.Components
         {
             _previousStates = new Queue<State>(stateHistoryLength);
             SetReferences();
+        }
+
+        void Start()
+        {
+            base.Start();
+            StateTransition(State.Wander);
         }
 
         void Update()

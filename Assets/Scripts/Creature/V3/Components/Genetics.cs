@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace Creature.V3.Components
 {
-    public class Genetics : MonoBehaviour
+    public class Genetics : ComponentBase
     {
         float[] _dna;
         float _minValue = 0;
@@ -13,6 +13,11 @@ namespace Creature.V3.Components
         
         bool _fuse = false;
 
+        void Start()
+        {
+            base.Start();
+        }
+        
         public int GetDnaLength()
         {
             return _dna.Length;

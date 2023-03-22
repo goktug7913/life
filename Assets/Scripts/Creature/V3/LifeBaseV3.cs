@@ -1,26 +1,44 @@
 using System;
+using System.Collections.Generic;
 using Creature.V3.Components;
 using UnityEngine;
-using Random = UnityEngine.Random;
 
 namespace Creature.V3
 {
     public class LifeBaseV3 : MonoBehaviour
     {
+        /*
+         * This is the base class for all life in the game.
+         * It is responsible for creating all the components that make up a creature.
+         * It also contains the mesh and material for the creature.
+         * We don't want to depend on prefabs for this, because we want to be able to
+         * create creatures at runtime.
+         *
+         * We want minimal editing from the Unity Editor, so we will use code to
+         * create the components and set their properties.
+         *
+         * This will result in an easily initialized creature which is created by
+         * adding this script to an empty game object.
+         */
+
+        // Components will add themselves to this list when they are created
+        public List<ComponentBase> components = new List<ComponentBase>();
+        
         public Genetics genetics;
         Brain _brain;
         Genitalia _genitalia;
         Movement _movement;
         Sensors _sensors;
-        
+
+        // Unity Components
         MeshFilter _meshFilter;
         MeshRenderer _renderer;
         MeshCollider _collider;
         Rigidbody _rigidbody;
-        
         public Mesh mesh;
         public Material material;
 
+        // TODO: This should be a property of the genetics component probably
         public bool isGenesis = true;
         // - - - - - - - - - - - - - - - - - - - - - - - - - - - -
         void Awake()
@@ -59,6 +77,7 @@ namespace Creature.V3
         // - - - - - - - - - - - - - - - - - - - - - - - - - - - -
         void InitializeComponents()
         {
+            // TODO: This is the old way of doing things. We should refactor this.
             genetics = gameObject.AddComponent<Genetics>();
             _movement = gameObject.AddComponent<Movement>();
             _genitalia = gameObject.AddComponent<Genitalia>();

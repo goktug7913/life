@@ -4,7 +4,7 @@ using Random = UnityEngine.Random;
 
 namespace Creature.V3.Components
 {
-    public class Genitalia : MonoBehaviour
+    public class Genitalia : ComponentBase
     {
         Genetics _geneticsRef;
         
@@ -40,6 +40,11 @@ namespace Creature.V3.Components
                 default:
                     throw new ArgumentOutOfRangeException();
             }
+        }
+
+        void Start()
+        {
+            base.Start();
         }
         // - - - - - - - - - - - - - - - - - - - - - - - - - - - -
         void SpawnOffspring()

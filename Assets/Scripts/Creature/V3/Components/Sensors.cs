@@ -1,12 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using UnityEditor;
 using UnityEngine;
 
 namespace Creature.V3.Components
 {
-    public class Sensors : MonoBehaviour
+    public class Sensors : ComponentBase
     {
         float _visionRange;
         float _horizontalFov;
@@ -25,6 +23,7 @@ namespace Creature.V3.Components
 
         void Start()
         {
+            base.Start();
             // TODO: get from creature
             _visionRange = 10;
             _horizontalFov = 90;
