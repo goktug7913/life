@@ -9,7 +9,7 @@ namespace Creature.V3.Components
         // This is done in the Start() method, which children of this class can override, and call base.Start() to ensure the component is added to the list.
         // Components which need to access the parent or other components can do so by accessing the ParentObject variable.
 
-        LifeBaseV3 ParentObject;
+        protected LifeBaseV3 ParentObject;
 
         // Start is called before the first frame update
         public virtual void Start()

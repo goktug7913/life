@@ -23,11 +23,18 @@ namespace Creature.V3.Components
         {
             base.Start();
             StateTransition(State.Wander);
+            _movementRef._target = new Vector3(Random.Range(-10, 10), Random.Range(-10, 10), 0.5f);
         }
 
         void Update()
         {
-            _movementRef.MoveTo(new Vector3(Random.Range(-5,5),Random.Range(-5,5),0.5f));
+            if (Mathf.Approximately(_movementRef._target.x, transform.position.x) &&
+                Mathf.Approximately(_movementRef._target.y, transform.position.y))
+            {
+                _movementRef._target = new Vector3(Random.Range(-10, 10), Random.Range(-10, 10), 0.5f);
+            }
+
+            _movementRef.MoveTo(_movementRef._target);
         }
 
         void SetReferences()

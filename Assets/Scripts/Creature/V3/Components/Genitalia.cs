@@ -6,6 +6,8 @@ namespace Creature.V3.Components
 {
     public class Genitalia : ComponentBase
     {
+        // We can add egg laying species later.
+        
         Genetics _geneticsRef;
         
         bool _hasWomb = false;

@@ -9,13 +9,19 @@ namespace Creature.V3.Components
         float _maxValue = 1;
 
         Genus _genus;
-        Sex _sex;
+        public Sex _sex;
         
         bool _fuse = false;
 
         void Start()
         {
             base.Start();
+            if (_fuse) return;
+            if (ParentObject.isGenesis)
+            {
+
+            }
+            _sex = DetermineSex();
         }
         
         public int GetDnaLength()

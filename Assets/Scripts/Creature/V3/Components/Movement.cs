@@ -6,9 +6,10 @@ namespace Creature.V3.Components
     {
 
         GameObject _root;
-        Attributes _attributes;
+        public Attributes _attributes;
+        public Vector3 _target;
 
-        struct Attributes
+        public struct Attributes
         {
             internal float speed;
             internal float maxSpeed;
