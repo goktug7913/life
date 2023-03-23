@@ -17,7 +17,7 @@ namespace Creature.V3.Components
         {
             base.Start();
             if (_fuse) return;
-            if (ParentObject.isGenesis)
+            if (parentObject.isGenesis)
             {
 
             }

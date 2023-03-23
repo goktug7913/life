@@ -5,9 +5,14 @@ namespace Creature.V3.Components
 {
     public class Brain : ComponentBase
     {
+        /*
+         * The brain is responsible for the creature's decision making.
+         * Currently it is a simple state machine.
+         * We might plug in a neural network later, which would be awesome.
+         */
         [SerializeField] State _state;
 
-        [SerializeField] Queue<State> _previousStates;
+        Queue<State> _previousStates;
         [SerializeField] public int stateHistoryLength = 30;
         
         [SerializeField] Movement _movementRef;
